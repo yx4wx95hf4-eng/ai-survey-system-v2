@@ -1,0 +1,41 @@
+# SQLite database (will be recreated on deploy)
+*.db
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Generated test files
+generate_100.py
+seed_data.py
+server.log
+
+# Test artifacts
+测试评分报告*.md
+test_report*.html
+test_frontend.js
+
+# Local scripts
+启动问卷系统.bat
+配置防火墙.bat
+手机访问入口.html
+
+# Survey 2 (separate project)
+survey2/
+
+# QR codes (regenerated on deploy)
+qr_*.png
