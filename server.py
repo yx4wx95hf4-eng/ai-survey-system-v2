@@ -904,6 +904,9 @@ def check_admin():
     return jsonify({'valid': False}), 401
 
 
+# ===== 应用启动时初始化数据库 =====
+init_db()
+
 if __name__ == '__main__':
     init_db()
     port = int(os.environ.get('PORT', 8080))
