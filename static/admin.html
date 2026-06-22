@@ -1,0 +1,1797 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数据看板 · 企业AI应用与技能需求调查</title>
+<style>
+/* ===== Design System ===== */
+:root {
+  --c-bg: #f0f4f8;
+  --c-surface: #ffffff;
+  --c-sidebar: #0f1a2e;
+  --c-sidebar-hover: #1a2d4a;
+  --c-sidebar-active: #1e3a5f;
+  --c-text: #1a2332;
+  --c-text-2: #5a6d80;
+  --c-text-3: #8b9eb0;
+  --c-border: #e2e8f0;
+  --c-border-light: #f0f4f8;
+  --c-accent: #4f7cff;
+  --c-accent-light: #eef3ff;
+  --c-success: #22c55e;
+  --c-success-light: #f0fdf6;
+  --c-warning: #f59e0b;
+  --c-warning-light: #fffbeb;
+  --c-danger: #ef4444;
+  --c-danger-light: #fef2f2;
+  --c-purple: #8b5cf6;
+  --c-purple-light: #f5f3ff;
+  --c-teal: #14b8a6;
+  --c-teal-light: #f0fdfa;
+  --c-rose: #f43f5e;
+  --c-rose-light: #fff1f3;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --radius-xs: 6px;
+  --shadow-xs: 0 1px 2px rgba(15,26,46,0.04);
+  --shadow-sm: 0 1px 3px rgba(15,26,46,0.06), 0 1px 2px rgba(15,26,46,0.04);
+  --shadow: 0 4px 16px rgba(15,26,46,0.06), 0 1px 4px rgba(15,26,46,0.04);
+  --shadow-lg: 0 12px 32px rgba(15,26,46,0.08), 0 2px 8px rgba(15,26,46,0.04);
+  --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  background: var(--c-bg); color: var(--c-text); line-height:1.6; min-height:100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== Login ===== */
+.login-wrap {
+  max-width:440px; margin:120px auto; padding:48px 40px;
+  background:var(--c-surface); border-radius:20px; box-shadow:var(--shadow-lg); text-align:center;
+}
+.login-wrap .brand { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:8px; }
+.login-wrap .brand .icon { width:44px; height:44px; background:linear-gradient(135deg,var(--c-accent),#6366f1); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:22px; color:#fff; }
+.login-wrap h1 { font-size:22px; font-weight:700; color:var(--c-text); letter-spacing:-0.3px; }
+.login-wrap .sub { font-size:13px; color:var(--c-text-2); margin:6px 0 32px; }
+.login-wrap .field { text-align:left; margin-bottom:20px; }
+.login-wrap .field label { display:block; font-size:13px; font-weight:600; color:var(--c-text); margin-bottom:8px; }
+.login-wrap input {
+  width:100%; padding:12px 16px; border:2px solid var(--c-border);
+  border-radius:var(--radius-sm); font-size:15px; outline:none;
+  transition:var(--transition); background:#f8fafc;
+}
+.login-wrap input:focus { border-color:var(--c-accent); box-shadow:0 0 0 4px rgba(79,124,255,0.1); background:#fff; }
+.login-wrap .btn {
+  width:100%; padding:13px; border:none; border-radius:var(--radius-sm);
+  font-size:15px; font-weight:600; cursor:pointer;
+  background:linear-gradient(135deg, var(--c-accent) 0%, #6366f1 100%);
+  color:#fff; transition:var(--transition); letter-spacing:0.3px;
+  box-shadow:0 4px 12px rgba(79,124,255,0.3);
+}
+.login-wrap .btn:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(79,124,255,0.4); }
+.login-wrap .error { color:var(--c-danger); font-size:13px; margin-top:12px; display:none; }
+
+/* ===== Layout ===== */
+.admin-layout { display:none; }
+.admin-layout.show { display:flex; min-height:100vh; }
+.sidebar {
+  width:240px; background:var(--c-sidebar); color:#fff; padding:24px 0;
+  flex-shrink:0; position:sticky; top:0; height:100vh; display:flex; flex-direction:column;
+  z-index:10;
+}
+.sidebar-header { padding:0 20px 20px; border-bottom:1px solid rgba(255,255,255,0.08); margin-bottom:8px; }
+.sidebar-header .brand-row { display:flex; align-items:center; gap:10px; }
+.sidebar-header .brand-icon { width:36px; height:36px; background:linear-gradient(135deg,var(--c-accent),#6366f1); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+.sidebar-header .brand-text { font-size:15px; font-weight:700; letter-spacing:-0.2px; }
+.sidebar-header .brand-ver { font-size:10px; color:rgba(255,255,255,0.35); margin-top:2px; }
+.sidebar-nav { flex:1; padding:8px; }
+.sidebar-nav .nav-section { padding:8px 12px 4px; font-size:10px; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.3); }
+.sidebar-nav .nav-item {
+  display:flex; align-items:center; gap:12px; padding:10px 16px; margin:2px 0;
+  color:rgba(255,255,255,0.55); text-decoration:none; font-size:14px;
+  cursor:pointer; border-radius:var(--radius-sm); transition:var(--transition);
+  font-weight:500; position:relative;
+}
+.sidebar-nav .nav-item:hover { background:var(--c-sidebar-hover); color:#fff; }
+.sidebar-nav .nav-item.active { background:var(--c-accent); color:#fff; box-shadow:0 4px 12px rgba(79,124,255,0.3); }
+.sidebar-nav .nav-item .ico { font-size:17px; width:22px; text-align:center; line-height:1; }
+.sidebar-nav .nav-item .badge { margin-left:auto; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; }
+.sidebar-nav .nav-item.active .badge { background:rgba(255,255,255,0.3); }
+.sidebar-footer { padding:16px 20px; border-top:1px solid rgba(255,255,255,0.06); }
+.sidebar-footer .logout-btn {
+  display:flex; align-items:center; gap:10px; color:rgba(255,255,255,0.35);
+  font-size:13px; cursor:pointer; transition:var(--transition); border:none; background:none; width:100%; padding:8px 0;
+}
+.sidebar-footer .logout-btn:hover { color:rgba(255,255,255,0.8); }
+
+.main-wrap { flex:1; display:flex; flex-direction:column; overflow-y:auto; max-height:100vh; }
+.top-bar {
+  background:var(--c-surface); padding:14px 28px; display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid var(--c-border-light); position:sticky; top:0; z-index:5;
+}
+.top-bar .page-title { font-size:15px; font-weight:600; color:var(--c-text); }
+.top-bar .top-meta { display:flex; align-items:center; gap:16px; font-size:12px; color:var(--c-text-2); }
+.top-bar .top-meta .refresh-info { display:flex; align-items:center; gap:6px; }
+.top-bar .top-meta .refresh-dot { width:7px; height:7px; background:var(--c-success); border-radius:50%; animation:pulse-dot 2s infinite; }
+.top-bar .top-meta .refresh-countdown { font-variant-numeric:tabular-nums; min-width:20px; text-align:right; }
+@keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.top-bar .survey-toggle {
+  padding:5px 14px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer;
+  transition:var(--transition); border:none; display:flex; align-items:center; gap:6px; font-family:inherit;
+}
+.top-bar .survey-toggle.open { background:var(--c-success-light); color:var(--c-success); }
+.top-bar .survey-toggle.closed { background:var(--c-danger-light); color:var(--c-danger); }
+.top-bar .survey-toggle:hover { filter:brightness(0.95); transform:scale(1.03); }
+.main-content { flex:1; padding:24px 28px; }
+
+/* ===== KPI Row ===== */
+.kpi-row {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;
+}
+.kpi-card {
+  background:var(--c-surface); border-radius:var(--radius); padding:20px 24px;
+  box-shadow:var(--shadow-xs); border:1px solid var(--c-border-light);
+  transition:var(--transition); display:flex; align-items:center; gap:16px;
+  position:relative; overflow:hidden; cursor:default;
+}
+.kpi-card::after {
+  content:''; position:absolute; top:0; right:0; width:80px; height:80px;
+  border-radius:0 0 0 80px; opacity:0.04; transition:0.3s;
+}
+.kpi-card:hover { box-shadow:var(--shadow); transform:translateY(-2px); }
+.kpi-card:hover::after { opacity:0.08; width:100px; height:100px; }
+.kpi-card .kpi-icon-wrap {
+  width:52px; height:52px; border-radius:14px; display:flex; align-items:center;
+  justify-content:center; font-size:24px; flex-shrink:0;
+}
+.kpi-card .kpi-icon-wrap.accent { background:var(--c-accent-light); color:var(--c-accent); }
+.kpi-card .kpi-icon-wrap.success { background:var(--c-success-light); color:var(--c-success); }
+.kpi-card .kpi-icon-wrap.warning { background:var(--c-warning-light); color:var(--c-warning); }
+.kpi-card .kpi-icon-wrap.purple { background:var(--c-purple-light); color:var(--c-purple); }
+.kpi-card .kpi-icon-wrap.teal { background:var(--c-teal-light); color:var(--c-teal); }
+.kpi-card .kpi-icon-wrap.rose { background:var(--c-rose-light); color:var(--c-rose); }
+.kpi-card .kpi-body { flex:1; min-width:0; }
+.kpi-card .kpi-value { font-size:30px; font-weight:800; color:var(--c-text); line-height:1.1; letter-spacing:-0.5px; }
+.kpi-card .kpi-label { font-size:13px; color:var(--c-text-2); margin-top:2px; font-weight:500; }
+.kpi-card .kpi-trend { font-size:11px; margin-top:4px; display:flex; align-items:center; gap:4px; font-weight:500; }
+.kpi-card .kpi-trend.up { color:var(--c-success); }
+.kpi-card .kpi-trend.down { color:var(--c-danger); }
+
+/* ===== Section Navigation ===== */
+.section-nav { display:flex; gap:8px; margin-bottom:24px; overflow-x:auto; padding-bottom:2px; }
+.section-nav::-webkit-scrollbar { height:0; }
+.section-nav .sec-tab {
+  padding:10px 20px; border-radius:24px; font-size:13px; font-weight:500; cursor:pointer;
+  background:var(--c-surface); color:var(--c-text-2); border:1.5px solid var(--c-border);
+  white-space:nowrap; transition:var(--transition); user-select:none;
+  display:flex; align-items:center; gap:7px;
+}
+.section-nav .sec-tab:hover { border-color:#c4d0dc; color:var(--c-text); }
+.section-nav .sec-tab.active {
+  background:var(--c-accent); color:#fff; border-color:var(--c-accent);
+  box-shadow:0 4px 12px rgba(79,124,255,0.25);
+}
+.section-nav .sec-tab .tab-dot { width:6px; height:6px; border-radius:50%; background:currentColor; opacity:0.5; }
+.section-nav .sec-tab.active .tab-dot { opacity:1; }
+
+/* ===== Insight Cards ===== */
+.insight-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(270px,1fr)); gap:14px; margin-bottom:24px; }
+.insight-card {
+  background:var(--c-surface); border-radius:var(--radius); padding:18px 20px;
+  box-shadow:var(--shadow-xs); border-left:4px solid transparent; transition:var(--transition);
+  cursor:pointer; display:flex; gap:14px; align-items:flex-start;
+}
+.insight-card:hover { box-shadow:var(--shadow); transform:translateY(-2px); }
+.insight-card:nth-child(1) { border-left-color:var(--c-accent); }
+.insight-card:nth-child(2) { border-left-color:var(--c-success); }
+.insight-card:nth-child(3) { border-left-color:var(--c-warning); }
+.insight-card:nth-child(4) { border-left-color:var(--c-purple); }
+.insight-card .insight-icon {
+  width:40px; height:40px; border-radius:10px; display:flex; align-items:center;
+  justify-content:center; font-size:18px; flex-shrink:0;
+}
+.insight-card:nth-child(1) .insight-icon { background:var(--c-accent-light); }
+.insight-card:nth-child(2) .insight-icon { background:var(--c-success-light); }
+.insight-card:nth-child(3) .insight-icon { background:var(--c-warning-light); }
+.insight-card:nth-child(4) .insight-icon { background:var(--c-purple-light); }
+.insight-card .insight-body { flex:1; min-width:0; }
+.insight-card .insight-title { font-size:12px; font-weight:600; color:var(--c-text-3); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+.insight-card .insight-text { font-size:14px; color:var(--c-text); line-height:1.5; font-weight:500; }
+.insight-card .insight-arrow { color:var(--c-text-3); font-size:12px; align-self:center; opacity:0; transition:0.2s; }
+.insight-card:hover .insight-arrow { opacity:1; }
+
+/* ===== Trend Chart Row ===== */
+.trend-row { margin-bottom:24px; }
+.trend-card {
+  background:var(--c-surface); border-radius:var(--radius); padding:20px 24px;
+  box-shadow:var(--shadow-xs); border:1px solid var(--c-border-light);
+}
+.trend-card .card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; }
+.trend-card .card-title { font-size:15px; font-weight:600; }
+.trend-card .card-body { position:relative; height:200px; }
+
+/* ===== Chart Grid ===== */
+.chart-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+.chart-card {
+  background:var(--c-surface); border-radius:var(--radius); padding:20px 24px;
+  box-shadow:var(--shadow-xs); border:1px solid var(--c-border-light); transition:var(--transition);
+  display:flex; flex-direction:column; overflow:hidden;
+}
+.chart-card:hover { box-shadow:var(--shadow); }
+.chart-card .card-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:4px; }
+.chart-card .card-title-row { flex:1; min-width:0; }
+.chart-card .card-title { font-size:14px; font-weight:600; color:var(--c-text); letter-spacing:-0.2px; }
+.chart-card .card-badge {
+  font-size:10px; background:var(--c-accent-light); color:var(--c-accent); padding:2px 10px;
+  border-radius:10px; font-weight:600; white-space:nowrap; margin-left:8px;
+}
+.chart-card .card-meta { font-size:11px; color:var(--c-text-3); margin-bottom:16px; }
+.chart-card .card-body { flex:1; position:relative; min-height:260px; display:flex; align-items:center; justify-content:center; }
+.chart-card .card-body canvas { max-height:300px; }
+.chart-card.full-width { grid-column:1 / -1; }
+.chart-card.full-width .card-body canvas { max-height:360px; }
+
+/* ===== Progress Bars (替代小选项数的环形图) ===== */
+.progress-stack { width:100%; }
+.progress-item { margin-bottom:12px; }
+.progress-item .pr-label-row { display:flex; justify-content:space-between; margin-bottom:4px; font-size:12px; }
+.progress-item .pr-label { color:var(--c-text); font-weight:500; }
+.progress-item .pr-value { color:var(--c-text-2); font-variant-numeric:tabular-nums; }
+.progress-item .pr-track { height:10px; background:var(--c-border-light); border-radius:5px; overflow:hidden; }
+.progress-item .pr-fill { height:100%; border-radius:5px; transition:width 0.8s cubic-bezier(0.4,0,0.2,1); }
+
+/* ===== Likert Scale Annotation ===== */
+.likert-scale-anno {
+  display:flex; justify-content:space-between; font-size:10px; color:var(--c-text-3);
+  margin-top:-8px; margin-bottom:8px; padding:0 4px;
+}
+
+/* ===== Cross Analysis ===== */
+.cross-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-bottom:24px; }
+@media (max-width:1024px) { .cross-grid { grid-template-columns:1fr; } }
+
+/* ===== Search/Filter Bar ===== */
+.search-bar {
+  display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px; align-items:center;
+}
+.search-bar input, .search-bar select {
+  padding:9px 14px; border:1.5px solid var(--c-border); border-radius:var(--radius-sm);
+  font-size:13px; outline:none; font-family:inherit; background:#fff;
+  transition:var(--transition);
+}
+.search-bar input:focus, .search-bar select:focus { border-color:var(--c-accent); box-shadow:0 0 0 3px rgba(79,124,255,0.08); }
+.search-bar input { min-width:220px; }
+.search-bar select { min-width:140px; cursor:pointer; }
+.search-bar .search-tag {
+  font-size:11px; padding:3px 10px; border-radius:10px; background:var(--c-accent-light);
+  color:var(--c-accent); display:flex; align-items:center; gap:4px; font-weight:500;
+}
+.search-bar .search-tag .clear { cursor:pointer; font-size:14px; line-height:1; opacity:0.6; }
+.search-bar .search-tag .clear:hover { opacity:1; }
+
+/* ===== Table ===== */
+.table-card {
+  background:var(--c-surface); border-radius:var(--radius); box-shadow:var(--shadow-xs);
+  overflow:hidden; border:1px solid var(--c-border-light);
+}
+.table-header {
+  padding:16px 24px; display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid var(--c-border-light); flex-wrap:wrap; gap:10px;
+}
+.table-header h3 { font-size:15px; font-weight:600; }
+.tbl { width:100%; border-collapse:collapse; font-size:13px; }
+.tbl thead { background:#f8fafc; }
+.tbl th {
+  padding:11px 16px; text-align:left; font-weight:600; color:var(--c-text-2); font-size:11px;
+  text-transform:uppercase; letter-spacing:0.5px; border-bottom:2px solid var(--c-border);
+  white-space:nowrap;
+}
+.tbl td { padding:12px 16px; border-bottom:1px solid var(--c-border-light); color:var(--c-text); }
+.tbl tbody tr { transition:background 0.15s; }
+.tbl tbody tr:nth-child(even) { background:#fafbfd; }
+.tbl tbody tr:hover { background:#f0f4ff; }
+.tbl .id-cell { font-weight:700; color:var(--c-accent); font-variant-numeric:tabular-nums; }
+.tbl .time-cell { font-size:12px; color:var(--c-text-2); font-variant-numeric:tabular-nums; }
+
+/* ===== Buttons ===== */
+.btn {
+  padding:8px 18px; border-radius:var(--radius-xs); border:none; font-size:13px;
+  cursor:pointer; font-weight:500; transition:var(--transition); display:inline-flex;
+  align-items:center; gap:6px; letter-spacing:0.2px; font-family:inherit;
+}
+.btn:active { transform:scale(0.97); }
+.btn-sm { padding:5px 11px; font-size:12px; }
+.btn-ghost { background:transparent; color:var(--c-accent); }
+.btn-ghost:hover { background:var(--c-accent-light); }
+.btn-outline { background:#fff; color:var(--c-text); border:1.5px solid var(--c-border); }
+.btn-outline:hover { border-color:var(--c-accent); color:var(--c-accent); }
+.btn-primary { background:var(--c-accent); color:#fff; box-shadow:0 2px 8px rgba(79,124,255,0.2); }
+.btn-primary:hover { background:#3d6af0; box-shadow:0 4px 12px rgba(79,124,255,0.3); }
+.btn-danger { background:#fff; color:var(--c-danger); border:1.5px solid #fecaca; }
+.btn-danger:hover { background:var(--c-danger-light); }
+
+/* ===== Pagination ===== */
+.pgn { display:flex; gap:6px; justify-content:center; margin-top:24px; }
+.pgn span {
+  width:36px; height:36px; display:flex; align-items:center; justify-content:center;
+  background:#fff; border-radius:var(--radius-xs); cursor:pointer; font-size:13px;
+  border:1.5px solid var(--c-border); transition:var(--transition); font-weight:500;
+}
+.pgn span.active { background:var(--c-accent); color:#fff; border-color:var(--c-accent); }
+.pgn span:hover:not(.active) { border-color:#94a3b8; }
+
+/* ===== Modal ===== */
+.modal-overlay {
+  position:fixed; inset:0; background:rgba(15,26,46,0.45); backdrop-filter:blur(4px);
+  display:flex; align-items:center; justify-content:center; z-index:999;
+  animation:fadeIn 0.15s ease;
+}
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+.modal-box {
+  background:#fff; border-radius:18px; padding:28px 32px; width:92%; max-width:740px;
+  max-height:82vh; overflow-y:auto; box-shadow:0 24px 60px rgba(0,0,0,0.18);
+  animation:slideUp 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+@keyframes slideUp { from{transform:translateY(24px);opacity:0} to{transform:translateY(0);opacity:1} }
+.modal-box h3 { font-size:17px; margin-bottom:4px; }
+.modal-box .modal-meta { font-size:13px; color:var(--c-text-2); margin-bottom:20px; }
+.modal-box .detail-section { margin-bottom:16px; }
+.modal-box .detail-section h4 { font-size:13px; color:var(--c-accent); margin-bottom:8px; font-weight:600; }
+.modal-box .detail-item {
+  font-size:12px; padding:6px 0; border-bottom:1px solid var(--c-border-light);
+  display:flex; gap:8px;
+}
+.modal-box .detail-item .dk { font-weight:600; color:var(--c-text); min-width:40px; }
+.modal-box .detail-item .dv { color:var(--c-text-2); word-break:break-all; }
+
+/* ===== Schedule Panel ===== */
+.schedule-panel {
+  position:fixed; top:0; right:-400px; width:380px; height:100vh;
+  background:var(--c-surface); box-shadow:-8px 0 32px rgba(15,26,46,0.12);
+  z-index:200; transition:right 0.3s cubic-bezier(0.4,0,0.2,1);
+  display:flex; flex-direction:column; overflow:hidden;
+}
+.schedule-panel.open { right:0; }
+.schedule-panel .sp-header {
+  padding:20px 24px 16px; border-bottom:1px solid var(--c-border-light);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.schedule-panel .sp-header h3 { font-size:16px; font-weight:700; }
+.schedule-panel .sp-close { width:32px; height:32px; border:none; background:var(--c-bg); border-radius:8px; cursor:pointer; font-size:18px; display:flex; align-items:center; justify-content:center; transition:var(--transition); }
+.schedule-panel .sp-close:hover { background:var(--c-border); }
+.schedule-panel .sp-body { flex:1; overflow-y:auto; padding:24px; }
+.schedule-panel .sp-footer { padding:16px 24px; border-top:1px solid var(--c-border-light); display:flex; gap:10px; }
+.schedule-panel .sp-overlay { position:fixed; inset:0; background:rgba(15,26,46,0.25); z-index:199; opacity:0; pointer-events:none; transition:opacity 0.3s; }
+.schedule-panel.open ~ .sp-overlay { opacity:1; pointer-events:all; }
+
+.sp-field { margin-bottom:20px; }
+.sp-field label { display:block; font-size:13px; font-weight:600; color:var(--c-text); margin-bottom:8px; }
+.sp-field input[type="datetime-local"] {
+  width:100%; padding:10px 14px; border:1.5px solid var(--c-border); border-radius:var(--radius-sm);
+  font-size:14px; outline:none; font-family:inherit; background:#f8fafc; transition:var(--transition);
+}
+.sp-field input[type="datetime-local"]:focus { border-color:var(--c-accent); background:#fff; box-shadow:0 0 0 3px rgba(79,124,255,0.1); }
+.sp-field .field-hint { font-size:11px; color:var(--c-text-3); margin-top:6px; }
+
+.sp-status-row {
+  padding:12px 16px; border-radius:var(--radius-sm); margin-bottom:24px;
+  display:flex; align-items:center; gap:10px; font-size:13px;
+}
+.sp-status-row.active { background:var(--c-success-light); color:#15803d; }
+.sp-status-row.inactive { background:var(--c-danger-light); color:#b91c1c; }
+.sp-status-row.pending { background:var(--c-warning-light); color:#92400e; }
+.sp-status-row .status-dot { width:8px; height:8px; border-radius:50%; background:currentColor; flex-shrink:0; }
+
+.sp-divider { height:1px; background:var(--c-border-light); margin:20px 0; }
+
+/* ===== Data Management page ===== */
+.data-mgmt-card {
+  background:var(--c-surface); border-radius:var(--radius); padding:28px 32px;
+  box-shadow:var(--shadow-xs); border:1px solid var(--c-border-light); margin-bottom:16px;
+}
+.data-mgmt-card h3 { font-size:16px; font-weight:700; margin-bottom:6px; }
+.data-mgmt-card p { font-size:13px; color:var(--c-text-2); margin-bottom:20px; line-height:1.7; }
+.data-mgmt-card .danger-zone {
+  border:2px dashed #fecaca; border-radius:var(--radius-sm); padding:20px;
+  background:var(--c-danger-light);
+}
+.data-mgmt-card .danger-zone h4 { color:var(--c-danger); font-size:14px; margin-bottom:8px; }
+.data-mgmt-card .danger-zone p { color:#7f1d1d; font-size:12px; margin-bottom:16px; }
+.reset-confirm-row { display:flex; gap:10px; align-items:center; margin-top:12px; }
+.reset-confirm-row input {
+  flex:1; padding:9px 14px; border:1.5px solid #fecaca; border-radius:var(--radius-sm);
+  font-size:13px; outline:none; font-family:inherit; transition:var(--transition);
+}
+.reset-confirm-row input:focus { border-color:var(--c-danger); box-shadow:0 0 0 3px rgba(239,68,68,0.1); }
+
+/* ===== Toast ===== */
+.toast {
+  position:fixed; top:24px; left:50%; transform:translateX(-50%); padding:10px 28px;
+  border-radius:24px; font-size:14px; font-weight:500; z-index:1000; opacity:0;
+  transition:opacity 0.25s; pointer-events:none; box-shadow:var(--shadow-lg);
+}
+.toast.show { opacity:1; }
+.toast.success { background:var(--c-success); color:#fff; }
+.toast.error { background:var(--c-danger); color:#fff; }
+
+/* ===== Loading & Empty ===== */
+.spinner { display:flex; align-items:center; justify-content:center; padding:60px; gap:12px; color:var(--c-text-2); font-size:14px; }
+.spinner::before { content:''; width:22px; height:22px; border:2.5px solid var(--c-border); border-top-color:var(--c-accent); border-radius:50%; animation:spin 0.7s linear infinite; }
+@keyframes spin { to{transform:rotate(360deg)} }
+.empty-state { text-align:center; padding:80px 20px; color:var(--c-text-2); }
+.empty-state .empty-icon { font-size:56px; margin-bottom:16px; opacity:0.6; }
+.empty-state h2 { font-size:18px; color:var(--c-text); margin-bottom:6px; }
+.empty-state p { font-size:14px; }
+
+/* ===== Entrance Animation ===== */
+.chart-card, .cross-card { animation:cardIn 0.5s ease both; }
+@keyframes cardIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+/* ===== Responsive ===== */
+@media (max-width:1280px) { .kpi-row { grid-template-columns:repeat(2,1fr); } .cross-grid { grid-template-columns:1fr; } }
+@media (max-width:1024px) {
+  .chart-grid { grid-template-columns:1fr; }
+  .chart-card.full-width { grid-column:1; }
+  .chart-card.full-width .card-body canvas { max-height:300px; }
+  .insight-row { grid-template-columns:1fr; }
+}
+@media (max-width:768px) {
+  .sidebar { width:60px; padding:20px 0; }
+  .sidebar-header { padding:0 10px 16px; }
+  .sidebar-header .brand-text, .sidebar-header .brand-ver, .sidebar-nav .nav-item span:not(.ico), .sidebar-nav .nav-item .badge, .sidebar-nav .nav-section, .sidebar-footer .logout-btn span { display:none; }
+  .sidebar-nav .nav-item { justify-content:center; padding:12px 0; }
+  .sidebar-nav { padding:4px; }
+  .main-content { padding:16px; }
+  .top-bar { padding:12px 16px; }
+  .kpi-row { grid-template-columns:repeat(2,1fr); }
+  .kpi-card { padding:16px; }
+  .kpi-card .kpi-value { font-size:24px; }
+  .section-nav { gap:6px; }
+  .section-nav .sec-tab { padding:8px 14px; font-size:12px; }
+  .search-bar { flex-direction:column; }
+  .search-bar input, .search-bar select { width:100%; }
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>window.addEventListener('error',function(e){if(e.target&&e.target.tagName==='SCRIPT'&&e.target.src.includes('chart.js')){document.getElementById('chart-fallback-msg').style.display='block';}},true);</script>
+</head>
+<body>
+
+<!-- Chart.js 加载失败提示 -->
+<div id="chart-fallback-msg" style="display:none;background:#fff3cd;color:#856404;text-align:center;padding:10px;font-size:14px;position:sticky;top:0;z-index:9999;">图表组件加载失败，请刷新页面或检查网络连接</div>
+
+<!-- ===== Login ===== -->
+<div id="login-page" class="login-wrap">
+  <div class="brand"><div class="icon">&#128202;</div></div>
+  <h1>数据看板</h1>
+  <p class="sub">企业AI应用与技能需求调查 · 管理后台</p>
+  <div class="field">
+    <label>管理员密码</label>
+    <input type="password" id="login-pwd" placeholder="请输入访问密码" onkeydown="if(event.key==='Enter')doLogin()" />
+  </div>
+  <button class="btn" onclick="doLogin()">进入后台</button>
+  <p class="error" id="login-error"></p>
+</div>
+
+<!-- ===== Admin Layout ===== -->
+<div id="admin-layout" class="admin-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="brand-row">
+        <div class="brand-icon">&#128202;</div>
+        <div>
+          <div class="brand-text">数据看板</div>
+          <div class="brand-ver">Survey Dashboard v2.2</div>
+        </div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">分析</div>
+      <a class="nav-item active" onclick="switchTab('dashboard',this)">
+        <span class="ico">&#128200;</span><span>统计概览</span>
+        <span class="badge" id="nav-total">0</span>
+      </a>
+      <a class="nav-item" onclick="switchTab('cross_analysis',this)">
+        <span class="ico">&#128260;</span><span>交叉分析</span>
+      </a>
+      <a class="nav-item" onclick="switchTab('responses',this)">
+        <span class="ico">&#128196;</span><span>问卷列表</span>
+      </a>
+      <div class="nav-section">管理</div>
+      <a class="nav-item" onclick="switchTab('data_mgmt',this)">
+        <span class="ico">&#9889;</span><span>数据管理</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="doLogout()">
+        <span class="ico">&#128682;</span><span>退出登录</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main-wrap">
+    <header class="top-bar">
+      <span class="page-title" id="page-title">统计概览</span>
+      <div class="top-meta">
+        <button class="btn btn-sm btn-outline" onclick="openSchedulePanel()" title="设置问卷起止时间" style="font-size:12px;">⏰ 时间计划</button>
+        <button class="survey-toggle open" id="survey-toggle-btn" onclick="toggleSurvey()">⏳ 检查中...</button>
+        <span class="refresh-info"><span class="refresh-dot"></span> <span class="refresh-countdown" id="refresh-countdown">30s</span> 后刷新</span>
+        <span id="top-time"></span>
+      </div>
+    </header>
+    <div class="main-content" id="main-content"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ===== Schedule Panel ===== -->
+<div id="schedule-panel" class="schedule-panel">
+  <div class="sp-header">
+    <h3>⏰ 问卷时间计划</h3>
+    <button class="sp-close" onclick="closeSchedulePanel()">✕</button>
+  </div>
+  <div class="sp-body">
+    <div id="sp-status-row" class="sp-status-row active">
+      <span class="status-dot"></span>
+      <span id="sp-status-text">加载中...</span>
+    </div>
+
+    <div class="sp-field">
+      <label>📅 开始时间 <span style="font-weight:400;color:var(--c-text-3);">（留空 = 立即生效）</span></label>
+      <input type="datetime-local" id="sp-start" />
+      <div class="field-hint">在此时间之前提交问卷将被拒绝</div>
+    </div>
+
+    <div class="sp-field">
+      <label>🏁 结束时间 <span style="font-weight:400;color:var(--c-text-3);">（留空 = 永不结束）</span></label>
+      <input type="datetime-local" id="sp-end" />
+      <div class="field-hint">超过此时间后问卷自动关闭</div>
+    </div>
+
+    <div class="sp-divider"></div>
+
+    <p style="font-size:12px;color:var(--c-text-3);line-height:1.8;">
+      💡 <b>时间计划优先级</b>：当"手动开关"为关闭状态时，即使在有效时间范围内也不接受提交。
+      时间计划在有效范围内且手动开关为开启时，问卷才接受填写。
+    </p>
+  </div>
+  <div class="sp-footer">
+    <button class="btn btn-outline" onclick="clearSchedule()" style="flex:1;">清除时间计划</button>
+    <button class="btn btn-primary" onclick="saveSchedule()" style="flex:2;">保存时间计划</button>
+  </div>
+</div>
+<div class="sp-overlay" id="sp-overlay" onclick="closeSchedulePanel()"></div>
+
+<script>
+// ========== 全局状态 ==========
+const API_BASE = '';
+let adminToken = localStorage.getItem('survey_admin_token');
+let currentTab = 'dashboard';
+let statsData = null;
+let crossData = null;
+let responsesPage = 1;
+let responsesFilters = { search:'', industry:'', size:'' };
+let chartInstances = {};
+let refreshTimer = null;
+let refreshCountdown = 30;
+let countdownInterval = null;
+let surveyIsOpen = true;
+
+// ========== 色彩体系 ==========
+const PALETTE = {
+  doughnut: ['#4f7cff','#22c55e','#f59e0b','#ef4444','#8b5cf6','#14b8a6','#f43f5e','#84cc16','#f97316','#6366f1','#0ea5e9','#e11d48'],
+  likert: ['#ef4444','#f97316','#eab308','#22c55e','#16a34a'],
+  likertAlpha: ['rgba(239,68,68,0.8)','rgba(249,115,22,0.8)','rgba(234,179,8,0.8)','rgba(34,197,94,0.8)','rgba(22,163,74,0.8)'],
+  areaFill: 'rgba(79,124,255,0.1)'
+};
+
+// ========== 初始化 ==========
+document.addEventListener('DOMContentLoaded', () => {
+  updateClock(); setInterval(updateClock, 30000);
+  if (adminToken) checkToken();
+});
+
+function updateClock() {
+  const now = new Date();
+  document.getElementById('top-time').textContent =
+    now.toLocaleDateString('zh-CN',{month:'long',day:'numeric'}) + ' ' +
+    now.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+}
+
+// ========== 自动刷新 ==========
+function startAutoRefresh() {
+  stopAutoRefresh();
+  refreshCountdown = 30;
+  updateCountdownUI();
+  countdownInterval = setInterval(() => {
+    refreshCountdown--;
+    updateCountdownUI();
+    if (refreshCountdown <= 0) {
+      refreshCountdown = 30;
+      if (currentTab === 'dashboard') loadDashboard(true);
+      else if (currentTab === 'cross_analysis') loadCrossAnalysis(true);
+      else if (currentTab === 'responses') loadResponses(responsesPage, true);
+    }
+  }, 1000);
+}
+
+function stopAutoRefresh() {
+  if (countdownInterval) { clearInterval(countdownInterval); countdownInterval = null; }
+}
+
+function updateCountdownUI() {
+  document.getElementById('refresh-countdown').textContent = refreshCountdown + 's';
+}
+
+async function checkToken() {
+  try {
+    const r = await fetch(API_BASE+'/api/admin/check',{headers:{'X-Admin-Token':adminToken}});
+    if (r.ok) { showAdmin(); loadDashboard(); }
+    else { localStorage.removeItem('survey_admin_token'); adminToken = null; }
+  } catch { console.error('Request failed'); }
+}
+
+// ========== 登录/登出 ==========
+async function doLogin() {
+  const pwd = document.getElementById('login-pwd').value;
+  const err = document.getElementById('login-error');
+  err.style.display = 'none';
+  if (!pwd) { err.textContent='请输入密码'; err.style.display='block'; return; }
+  try {
+    const r = await fetch(API_BASE+'/api/admin/login',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({password:pwd})
+    });
+    const d = await r.json();
+    if (d.success) {
+      adminToken = d.token;
+      localStorage.setItem('survey_admin_token', adminToken);
+      showAdmin(); loadDashboard();
+    } else { err.textContent=d.error||'登录失败'; err.style.display='block'; }
+  } catch { err.textContent='网络错误，请重试'; err.style.display='block'; }
+}
+
+async function doLogout() {
+  stopAutoRefresh();
+  try { await fetch(API_BASE+'/api/admin/logout',{method:'POST',headers:{'X-Admin-Token':adminToken}}); } catch {}
+  localStorage.removeItem('survey_admin_token'); adminToken = null;
+  document.getElementById('login-page').style.display = 'block';
+  document.getElementById('admin-layout').classList.remove('show');
+}
+
+function showAdmin() {
+  document.getElementById('login-page').style.display = 'none';
+  document.getElementById('admin-layout').classList.add('show');
+}
+
+// ========== 问卷开关 ==========
+async function checkSurveyStatus() {
+  try {
+    const r = await fetch(API_BASE+'/api/admin/status',{headers:{'X-Admin-Token':adminToken}});
+    const d = await r.json();
+    surveyIsOpen = d.open;
+    updateSurveyToggleUI(d);
+  } catch { console.error('Request failed'); }
+}
+
+async function toggleSurvey() {
+  try {
+    const r = await fetch(API_BASE+'/api/admin/status',{
+      method:'POST',headers:{'Content-Type':'application/json','X-Admin-Token':adminToken},
+      body:JSON.stringify({open:!surveyIsOpen})
+    });
+    if (!r.ok) throw new Error('服务器返回错误 ('+r.status+')');
+    const d = await r.json();
+    if (d.success) {
+      surveyIsOpen = d.open;
+      updateSurveyToggleUI(d);
+      showToast(surveyIsOpen ? '问卷已开启收集' : '问卷已暂停收集', 'success');
+    }
+  } catch { showToast('操作失败','error'); }
+}
+
+function updateSurveyToggleUI(d) {
+  const btn = document.getElementById('survey-toggle-btn');
+  // effective_open 表示实际是否接受提交（开关+时间双重控制）
+  const effectiveOpen = d ? d.effective_open : surveyIsOpen;
+  const manualOpen = d ? d.open : surveyIsOpen;
+
+  if (!manualOpen) {
+    btn.className = 'survey-toggle closed';
+    btn.innerHTML = '&#128308; 已暂停';
+    btn.title = '手动关闭，点击开启';
+  } else if (!effectiveOpen) {
+    // 手动开着但时间计划未到/已过
+    btn.className = 'survey-toggle closed';
+    btn.innerHTML = '&#9203; 时间限制';
+    btn.title = '开关已开启，但在时间计划限制范围外';
+  } else {
+    btn.className = 'survey-toggle open';
+    btn.innerHTML = '&#128994; 收集中';
+    btn.title = '点击暂停问卷收集';
+  }
+}
+
+// ========== 数据管理页面 ==========
+async function loadDataMgmt() {
+  const mc = document.getElementById('main-content');
+
+  // 获取当前统计数量和时间计划
+  let totalCount = 0;
+  let scheduleInfo = {start_time:'', end_time:''};
+  let statusInfo = {open: true, effective_open: true};
+  try {
+    const [rStats, rSched, rStatus] = await Promise.all([
+      fetch(API_BASE+'/api/admin/stats',{headers:{'X-Admin-Token':adminToken}}),
+      fetch(API_BASE+'/api/admin/schedule',{headers:{'X-Admin-Token':adminToken}}),
+      fetch(API_BASE+'/api/admin/status',{headers:{'X-Admin-Token':adminToken}})
+    ]);
+    const stats = await rStats.json();
+    totalCount = stats.total || 0;
+    scheduleInfo = await rSched.json();
+    statusInfo = await rStatus.json();
+  } catch { console.error('Request failed'); }
+
+  const switchLabel = statusInfo.open ? '收集中（点击可暂停）' : '已暂停（点击可开启）';
+  const switchColor = statusInfo.effective_open ? 'var(--c-success)' : 'var(--c-danger)';
+  const startDisp = scheduleInfo.start_time ? scheduleInfo.start_time.replace('T',' ') : '无限制';
+  const endDisp   = scheduleInfo.end_time   ? scheduleInfo.end_time.replace('T',' ')   : '无限制';
+
+  mc.innerHTML = `
+  <div class="data-mgmt-card">
+    <h3>📊 当前状态概览</h3>
+    <p>查看当前问卷的运行状态和基本数据信息。</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;">
+      <div class="kpi-card" style="cursor:default;">
+        <div class="kpi-icon-wrap accent">📋</div>
+        <div class="kpi-body"><div class="kpi-value">${totalCount}</div><div class="kpi-label">已回收问卷数</div></div>
+      </div>
+      <div class="kpi-card" style="cursor:default;">
+        <div class="kpi-icon-wrap" style="background:#f0fdf6;color:${switchColor};">⚡</div>
+        <div class="kpi-body"><div class="kpi-value" style="font-size:16px;font-weight:600;margin-top:4px;">${switchLabel}</div><div class="kpi-label">问卷收集状态</div></div>
+      </div>
+      <div class="kpi-card" style="cursor:default;">
+        <div class="kpi-icon-wrap warning">⏰</div>
+        <div class="kpi-body"><div class="kpi-value" style="font-size:13px;font-weight:600;line-height:1.4;">${startDisp}<br>${endDisp}</div><div class="kpi-label">开始/结束时间</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="data-mgmt-card">
+    <h3>⏰ 问卷时间计划</h3>
+    <p>设置问卷的收集时间窗口。在时间范围之外提交的数据将被自动拒绝。
+       <b>手动开关与时间计划同时生效</b>，两者均满足时才接受提交。</p>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;">
+      <div style="flex:1;min-width:200px;">
+        <label style="display:block;font-size:13px;font-weight:600;margin-bottom:8px;">📅 开始时间</label>
+        <input type="datetime-local" id="mgmt-start" value="${scheduleInfo.start_time||''}"
+          style="width:100%;padding:10px 14px;border:1.5px solid var(--c-border);border-radius:8px;font-size:14px;outline:none;font-family:inherit;" />
+      </div>
+      <div style="flex:1;min-width:200px;">
+        <label style="display:block;font-size:13px;font-weight:600;margin-bottom:8px;">🏁 结束时间</label>
+        <input type="datetime-local" id="mgmt-end" value="${scheduleInfo.end_time||''}"
+          style="width:100%;padding:10px 14px;border:1.5px solid var(--c-border);border-radius:8px;font-size:14px;outline:none;font-family:inherit;" />
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-outline" onclick="mgmtClearSchedule()">清除时间计划</button>
+      <button class="btn btn-primary" onclick="mgmtSaveSchedule()">💾 保存时间计划</button>
+    </div>
+  </div>
+
+  <div class="data-mgmt-card">
+    <h3 style="color:var(--c-danger);">⚠️ 危险操作区</h3>
+    <p>以下操作不可撤销，请谨慎执行。建议在操作前先导出数据备份。</p>
+    <div class="danger-zone">
+      <h4>🗑️ 还原数据（清空所有问卷数据）</h4>
+      <p>将永久删除全部 <b>${totalCount} 条</b> 问卷记录，系统还原至初始空白状态。此操作不可撤销！</p>
+      <button class="btn btn-outline" onclick="exportData()" style="margin-bottom:12px;">⬇ 先导出数据备份</button>
+      <div class="reset-confirm-row">
+        <input type="text" id="reset-input" placeholder="输入 CONFIRM_RESET 确认清空" />
+        <button class="btn" style="background:var(--c-danger);color:#fff;" onclick="doReset()">清空数据</button>
+      </div>
+      <p style="margin-top:8px;font-size:11px;color:#b91c1c;">请在上方输入框中精确输入 <code style="background:#fee2e2;padding:1px 6px;border-radius:4px;">CONFIRM_RESET</code> 后点击清空</p>
+    </div>
+  </div>`;
+}
+
+async function mgmtSaveSchedule() {
+  const start = document.getElementById('mgmt-start').value;
+  const end   = document.getElementById('mgmt-end').value;
+  if (start && end && start >= end) { showToast('结束时间必须晚于开始时间','error'); return; }
+  try {
+    const r = await fetch(API_BASE+'/api/admin/schedule', {
+      method:'POST', headers:{'Content-Type':'application/json','X-Admin-Token':adminToken},
+      body: JSON.stringify({start_time:start, end_time:end})
+    });
+    const d = await r.json();
+    if (d.success) {
+      showToast('时间计划已保存','success');
+      checkSurveyStatus();
+      loadDataMgmt(); // 刷新状态显示
+    } else { showToast(d.error||'保存失败','error'); }
+  } catch { showToast('网络错误','error'); }
+}
+
+async function mgmtClearSchedule() {
+  if (!confirm('确认清除时间计划？问卷将不受时间窗口限制。')) return;
+  document.getElementById('mgmt-start').value = '';
+  document.getElementById('mgmt-end').value = '';
+  await mgmtSaveSchedule();
+}
+
+async function doReset() {
+  const input = document.getElementById('reset-input').value.trim();
+  if (input !== 'CONFIRM_RESET') {
+    showToast('确认码不正确，请输入 CONFIRM_RESET','error'); return;
+  }
+  if (!confirm('⚠️ 最后确认：即将永久删除所有问卷数据，无法恢复！\n\n确定继续吗？')) return;
+  try {
+    const r = await fetch(API_BASE+'/api/admin/reset', {
+      method:'POST', headers:{'Content-Type':'application/json','X-Admin-Token':adminToken},
+      body: JSON.stringify({confirm:'CONFIRM_RESET'})
+    });
+    const d = await r.json();
+    if (d.success) {
+      showToast(d.message,'success');
+      setTimeout(()=>{
+        document.querySelector('.sidebar-nav .nav-item').click(); // 回到总览
+      }, 1500);
+    } else { showToast(d.error||'操作失败','error'); }
+  } catch { showToast('网络错误','error'); }
+}
+
+// ========== 时间计划面板 ==========
+async function openSchedulePanel() {
+  const panel = document.getElementById('schedule-panel');
+  const overlay = document.getElementById('sp-overlay');
+
+  // 加载当前配置
+  try {
+    const r = await fetch(API_BASE+'/api/admin/schedule', {headers:{'X-Admin-Token':adminToken}});
+    const d = await r.json();
+    document.getElementById('sp-start').value = d.start_time || '';
+    document.getElementById('sp-end').value   = d.end_time   || '';
+  } catch { console.error('Request failed'); }
+
+  updateSpStatusRow();
+  panel.classList.add('open');
+  overlay.style.opacity = '1';
+  overlay.style.pointerEvents = 'all';
+}
+
+function closeSchedulePanel() {
+  const panel = document.getElementById('schedule-panel');
+  const overlay = document.getElementById('sp-overlay');
+  panel.classList.remove('open');
+  overlay.style.opacity = '0';
+  overlay.style.pointerEvents = 'none';
+}
+
+function updateSpStatusRow() {
+  const row  = document.getElementById('sp-status-row');
+  const text = document.getElementById('sp-status-text');
+  const start = document.getElementById('sp-start').value;
+  const end   = document.getElementById('sp-end').value;
+  const now   = new Date().toISOString().slice(0,16);
+
+  row.className = 'sp-status-row';
+  if (!start && !end) {
+    row.classList.add('active');
+    text.textContent = '当前无时间限制，问卷始终在手动开关控制下开放';
+  } else if (start && now < start) {
+    row.classList.add('pending');
+    text.textContent = `计划于 ${start.replace('T',' ')} 开放`;
+  } else if (end && now > end) {
+    row.classList.add('inactive');
+    text.textContent = `已于 ${end.replace('T',' ')} 结束，问卷已自动关闭`;
+  } else {
+    row.classList.add('active');
+    const endInfo = end ? `，将于 ${end.replace('T',' ')} 自动关闭` : '';
+    text.textContent = `在有效收集期内${endInfo}`;
+  }
+}
+
+async function saveSchedule() {
+  const start = document.getElementById('sp-start').value;
+  const end   = document.getElementById('sp-end').value;
+
+  if (start && end && start >= end) {
+    showToast('结束时间必须晚于开始时间', 'error'); return;
+  }
+
+  try {
+    const r = await fetch(API_BASE+'/api/admin/schedule', {
+      method:'POST', headers:{'Content-Type':'application/json','X-Admin-Token':adminToken},
+      body: JSON.stringify({start_time: start, end_time: end})
+    });
+    const d = await r.json();
+    if (d.success) {
+      showToast('时间计划已保存', 'success');
+      updateSpStatusRow();
+      closeSchedulePanel();
+      checkSurveyStatus();
+    } else {
+      showToast(d.error || '保存失败', 'error');
+    }
+  } catch { showToast('网络错误', 'error'); }
+}
+
+async function clearSchedule() {
+  if (!confirm('清除后问卷将不受时间限制，是否继续？')) return;
+  document.getElementById('sp-start').value = '';
+  document.getElementById('sp-end').value   = '';
+  await saveSchedule();
+}
+
+// ========== Tab切换 ==========
+function switchTab(tab, el) {
+  stopAutoRefresh();
+  currentTab = tab;
+  document.querySelectorAll('.sidebar-nav .nav-item').forEach(n=>n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  const titles = {dashboard:'统计概览',cross_analysis:'交叉分析',responses:'问卷列表',data_mgmt:'数据管理'};
+  document.getElementById('page-title').textContent = titles[tab]||'';
+  if (tab==='dashboard') loadDashboard();
+  else if (tab==='cross_analysis') loadCrossAnalysis();
+  else if (tab==='responses') loadResponses();
+  else if (tab==='data_mgmt') loadDataMgmt();
+}
+
+function destroyAllCharts() {
+  Object.values(chartInstances).forEach(c=>{try{c.destroy()}catch{}});
+  chartInstances = {};
+}
+
+// ========== 加载Dashboard ==========
+async function loadDashboard(silent) {
+  const mc = document.getElementById('main-content');
+  if (!silent) mc.innerHTML = '<div class="spinner">加载统计数据...</div>';
+  try {
+    const r = await fetch(API_BASE+'/api/admin/stats',{headers:{'X-Admin-Token':adminToken}});
+    if (!r.ok) throw new Error('服务器返回错误 ('+r.status+')');
+    statsData = await r.json();
+    document.getElementById('nav-total').textContent = statsData.total || 0;
+
+    // 加载问卷开关状态
+    await checkSurveyStatus();
+
+    if (statsData.total === 0) {
+      mc.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div><h2>暂无问卷数据</h2><p>等待用户提交问卷后，数据看板将自动更新</p></div>';
+      startAutoRefresh();
+      return;
+    }
+    destroyAllCharts();
+    renderDashboard(statsData);
+    startAutoRefresh();
+  } catch(e) {
+    if (!silent) mc.innerHTML = `<div style="text-align:center;padding:80px;color:var(--c-danger);">加载失败: ${e.message}</div>`;
+    startAutoRefresh();
+  }
+}
+
+function renderDashboard(data) {
+  const mc = document.getElementById('main-content');
+  const sum = data.summary || {};
+  const avgMin = sum.avg_duration ? Math.floor(sum.avg_duration/60) : 0;
+  const avgSec = sum.avg_duration ? sum.avg_duration%60 : 0;
+
+  let h = '';
+
+  // === KPI Cards (6个) ===
+  h += `<div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-icon-wrap accent">📋</div>
+      <div class="kpi-body">
+        <div class="kpi-value">${data.total}</div>
+        <div class="kpi-label">回收问卷总数</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon-wrap success">📅</div>
+      <div class="kpi-body">
+        <div class="kpi-value">${sum.today_count||0}</div>
+        <div class="kpi-label">今日新增</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon-wrap warning">⏱️</div>
+      <div class="kpi-body">
+        <div class="kpi-value" style="font-size:26px;">${avgMin}′${String(avgSec).padStart(2,'0')}″</div>
+        <div class="kpi-label">平均填写耗时</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon-wrap purple">🕐</div>
+      <div class="kpi-body">
+        <div class="kpi-value" style="font-size:15px;font-weight:600;">${sum.latest_time||'—'}</div>
+        <div class="kpi-label">最新提交</div>
+      </div>
+    </div>
+  </div>`;
+
+  // === 洞察摘要（可点击下钻）===
+  h += buildInsights(data);
+
+  // === 提交趋势图 ===
+  h += `<div class="trend-row">
+    <div class="trend-card">
+      <div class="card-header"><span class="card-title">📈 每日提交趋势</span><span class="card-meta" style="font-size:11px;">累计 ${data.total} 份</span></div>
+      <div class="card-body"><canvas id="trend-chart"></canvas></div>
+    </div>
+  </div>`;
+
+  // === Section Tabs ===
+  const secs = [
+    {key:'basic',label:'一、基本信息',ico:'🏢'},
+    {key:'ai_status',label:'二、AI技术应用现状',ico:'🤖'},
+    {key:'job_skills',label:'三、岗位与技能需求变化',ico:'💼'},
+    {key:'talent_supply',label:'四、人才供给与校企合作',ico:'🎓'},
+    {key:'policy',label:'五、政策认知与需求',ico:'🏛️'}
+  ];
+  h += '<div class="section-nav" id="section-nav">';
+  secs.forEach((s,i)=>{
+    h += `<div class="sec-tab${i===0?' active':''}" onclick="switchStatSection('${s.key}',this)"><span class="tab-dot"></span>${s.ico} ${s.label}</div>`;
+  });
+  h += '</div>';
+  h += '<div id="stat-charts"></div>';
+  mc.innerHTML = h;
+
+  // 先渲染趋势图
+  loadTrendChart();
+  // 再渲染第一个section
+  setTimeout(()=>switchStatSection('basic', document.querySelector('#section-nav .sec-tab')), 150);
+}
+
+async function loadTrendChart() {
+  try {
+    const r = await fetch(API_BASE+'/api/admin/trend',{headers:{'X-Admin-Token':adminToken}});
+    if (!r.ok) throw new Error('服务器返回错误 ('+r.status+')');
+    const d = await r.json();
+    const trend = d.trend || [];
+    const ctx = document.getElementById('trend-chart');
+    if (!ctx) return;
+    const dates = trend.map(t=>t.date);
+    const counts = trend.map(t=>t.count);
+    const cumul = trend.map(t=>t.cumulative);
+
+    chartInstances['trend'] = new Chart(ctx.getContext('2d'), {
+      type:'line',
+      data:{
+        labels:dates,
+        datasets:[
+          {
+            label:'每日新增', data:counts,
+            borderColor:'#4f7cff', backgroundColor:PALETTE.areaFill,
+            fill:true, tension:0.4, pointRadius:4, pointBackgroundColor:'#4f7cff',
+            borderWidth:2.5,
+          },
+          {
+            label:'累计回收', data:cumul,
+            borderColor:'#f59e0b', backgroundColor:'rgba(245,158,11,0.05)',
+            fill:true, tension:0.4, pointRadius:3, pointBackgroundColor:'#f59e0b',
+            borderWidth:2, borderDash:[6,3],
+          }
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        interaction:{mode:'index',intersect:false},
+        plugins:{
+          legend:{position:'bottom',labels:{padding:16,usePointStyle:true,pointStyleWidth:8,font:{size:11,family:'inherit'}}},
+          tooltip:{backgroundColor:'rgba(15,26,46,0.9)',padding:12,cornerRadius:8}
+        },
+        scales:{
+          x:{grid:{display:false},ticks:{font:{size:11},color:'#8b9eb0'}},
+          y:{beginAtZero:true,grid:{color:'#f0f4f8'},ticks:{font:{size:11},color:'#8b9eb0'}}
+        },
+        animation:{duration:900,easing:'easeOutQuart'}
+      }
+    });
+  } catch { console.error('Request failed'); }
+}
+
+function buildInsights(data) {
+  const sec = data.sections || {};
+  const total = data.total || 1;
+  let cards = [];
+
+  // Insight 1: AI应用率 → 点击跳转到ai_status
+  const b1 = sec['B1'];
+  if (b1) {
+    const noAI = b1.counts['I. 尚未应用任何AI技术'] || 0;
+    const rate = Math.round((total - noAI) / total * 100);
+    cards.push({
+      icon:'🤖', title:'AI应用渗透率',
+      text:`已有 <b>${rate}%</b> 的企业在至少一个环节应用了AI技术，覆盖多个业务场景。`,
+      action:`switchStatSection('ai_status',document.querySelectorAll('#section-nav .sec-tab')[1])`
+    });
+  }
+
+  // Insight 2: 最紧缺岗位 → 下钻到job_skills
+  const c1 = sec['C1'];
+  if (c1) {
+    const entries = Object.entries(c1.counts).sort((a,b)=>b[1]-a[1]);
+    if (entries.length) {
+      const top = entries[0][0].replace(/^[A-J]\.\s*/,'');
+      cards.push({
+        icon:'💼', title:'最紧缺岗位',
+        text:`<b>${top}</b> 被 ${entries[0][1]} 家企业列为首要紧缺岗位。`,
+        action:`switchStatSection('job_skills',document.querySelectorAll('#section-nav .sec-tab')[2])`
+      });
+    }
+  }
+
+  // Insight 3: 招聘困难感知 → 下钻到talent_supply
+  const d1 = sec['D1'];
+  if (d1) {
+    const high = (d1.counts['4']||0)+(d1.counts['5']||0);
+    const rate2 = Math.round(high/d1.total_responses*100);
+    cards.push({
+      icon:'🎓', title:'招聘困难感知',
+      text:`<b>${rate2}%</b> 的企业认为招聘困难（4-5分），其中 ${d1.counts['5']||0} 家给出最高难度评价。`,
+      action:`switchStatSection('talent_supply',document.querySelectorAll('#section-nav .sec-tab')[3])`
+    });
+  }
+
+  // Insight 4: 政策触达 → 下钻到policy
+  const e1 = sec['E1'];
+  if (e1) {
+    const unknow = e1.counts['D. 完全不了解']||0;
+    cards.push({
+      icon:'🏛️', title:'政策触达',
+      text:`仍有 <b>${unknow}</b> 家企业对AI人才相关政策"完全不了解"，政策宣传存在提升空间。`,
+      action:`switchStatSection('policy',document.querySelectorAll('#section-nav .sec-tab')[4])`
+    });
+  }
+
+  if (!cards.length) return '';
+  let h = '<div class="insight-row">';
+  cards.forEach(c=>{
+    h += `<div class="insight-card" onclick="${c.action}" title="点击查看详情">
+      <div class="insight-icon">${c.icon}</div>
+      <div class="insight-body">
+        <div class="insight-title">${c.title}</div>
+        <div class="insight-text">${c.text}</div>
+      </div>
+      <div class="insight-arrow">→</div>
+    </div>`;
+  });
+  h += '</div>';
+  return h;
+}
+
+function switchStatSection(key, el) {
+  document.querySelectorAll('#section-nav .sec-tab').forEach(s=>s.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderSectionCharts(key);
+}
+
+function renderSectionCharts(key) {
+  const ct = document.getElementById('stat-charts');
+  if (!ct||!statsData||!statsData.sections) return;
+
+  const qs = getSectionQuestions(key);
+  if (!qs.length) { ct.innerHTML='<div class="empty-state"><p>暂无数据</p></div>'; return; }
+
+  let h = '<div class="chart-grid">';
+  const jobs = [];
+
+  qs.forEach(q=>{
+    const qd = statsData.sections[q.id];
+    if (!qd||Object.keys(qd.counts).length===0) return;
+    const cid = 'ch-'+q.id;
+    const isMatrix = q.type==='matrix';
+    const fullCls = isMatrix ? ' full-width' : '';
+    h += `<div class="chart-card${fullCls}" style="animation-delay:${jobs.length*0.04}s">
+      <div class="card-header">
+        <div class="card-title-row">
+          <div class="card-title"><span class="card-badge">${q.id}</span> ${q.title}</div>
+        </div>
+      </div>
+      <div class="card-meta">${qd.total_responses} 人作答</div>
+      <div class="card-body" id="body-${cid}"><canvas id="${cid}"></canvas></div>
+    </div>`;
+    jobs.push({id:q.id, cid, qd, q});
+  });
+  h += '</div>';
+  ct.innerHTML = h;
+
+  requestAnimationFrame(()=>{
+    jobs.forEach(j=>renderQuestionChart(j.cid, j.qd, j.q));
+  });
+}
+
+// ========== 智能图表渲染 ==========
+function isNumericData(entries) {
+  return entries.length>0 && entries.every(([k])=>/^\d+$/.test(k.trim()));
+}
+
+function renderQuestionChart(cid, qd, q) {
+  const cv = document.getElementById(cid);
+  if (!cv) return;
+  const ctx = cv.getContext('2d');
+  const entries = Object.entries(qd.counts);
+  const total = qd.total_responses||1;
+
+  if (q.type==='radio') {
+    const sorted = entries.sort((a,b)=>b[1]-a[1]);
+    const labels = sorted.map(e=>cleanLabel(e[0]));
+    const values = sorted.map(e=>e[1]);
+    // ≤3选项用进度条代替环形图，减少视觉疲劳
+    if (labels.length <= 3) renderProgressBars(cid, labels, values, total);
+    else if (labels.length <= 7) renderDoughnut(ctx, cid, labels, values, total);
+    else renderHorizBar(ctx, cid, labels, values, total);
+  } else if (q.type==='checkbox') {
+    const sorted = entries.sort((a,b)=>b[1]-a[1]);
+    renderHorizBar(ctx, cid, sorted.map(e=>cleanLabel(e[0])), sorted.map(e=>e[1]), total);
+  } else if (q.type==='likert' && q.rows && q.rows.length===1 && isNumericData(entries)) {
+    const sorted = entries.sort((a,b)=>parseInt(a[0])-parseInt(b[0]));
+    renderLikertBar(ctx, cid, sorted.map(e=>e[0]+'分'), sorted.map(e=>e[1]), q.rows[0], total);
+  } else if (q.type==='matrix') {
+    renderMatrixChart(ctx, cid, qd, q);
+  } else {
+    const sorted = entries.sort((a,b)=>b[1]-a[1]);
+    renderHorizBar(ctx, cid, sorted.map(e=>cleanLabel(e[0])), sorted.map(e=>e[1]), total);
+  }
+}
+
+// ===== 进度条（≤3选项） =====
+function renderProgressBars(cid, labels, values, total) {
+  const body = document.getElementById('body-'+cid);
+  if (!body) return;
+  const colors = PALETTE.doughnut.slice(0, labels.length);
+  let h = '<div class="progress-stack">';
+  labels.forEach((l, i) => {
+    const pct = Math.round(values[i]/total*100);
+    h += `<div class="progress-item">
+      <div class="pr-label-row"><span class="pr-label">${l}</span><span class="pr-value">${values[i]} 人 (${pct}%)</span></div>
+      <div class="pr-track"><div class="pr-fill" style="width:0;background:${colors[i]}" data-width="${pct}%"></div></div>
+    </div>`;
+  });
+  h += '</div>';
+  body.innerHTML = h;
+  // 动画延迟
+  setTimeout(()=>{
+    body.querySelectorAll('.pr-fill').forEach(f=>{ f.style.width = f.dataset.width; });
+  }, 100);
+}
+
+// ===== 环形图 =====
+function renderDoughnut(ctx, cid, labels, values, total) {
+  const colors = PALETTE.doughnut.slice(0,labels.length);
+  chartInstances[cid] = new Chart(ctx, {
+    type:'doughnut',
+    data:{
+      labels,
+      datasets:[{
+        data:values, backgroundColor:colors,
+        borderColor:'#fff', borderWidth:3,
+        hoverBorderWidth:4, hoverBorderColor:'#fff',
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:true,
+      cutout:'58%',
+      plugins:{
+        legend:{
+          position:'bottom',
+          labels:{padding:14,usePointStyle:true,pointStyleWidth:9,pointStyleHeight:9,font:{size:11,family:'inherit'},color:'#5a6d80'}
+        },
+        tooltip:{
+          backgroundColor:'rgba(15,26,46,0.9)',titleFont:{size:13},bodyFont:{size:12},
+          padding:12,cornerRadius:8,
+          callbacks:{
+            label:ctx=>` ${ctx.label}: ${ctx.raw} 人 (${Math.round(ctx.raw/total*100)}%)`
+          }
+        }
+      },
+      animation:{animateRotate:true,duration:900,easing:'easeOutQuart'}
+    }
+  });
+}
+
+// ===== 横向柱状图 =====
+function renderHorizBar(ctx, cid, labels, values, total) {
+  const colors = labels.map((_,i)=>PALETTE.doughnut[i%PALETTE.doughnut.length]);
+  chartInstances[cid] = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels,
+      datasets:[{
+        label:'选择人数', data:values,
+        backgroundColor:colors,
+        borderRadius:6, borderSkipped:false,
+        barThickness:20, maxBarThickness:26,
+      }]
+    },
+    options:{
+      indexAxis:'y',
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'rgba(15,26,46,0.9)',padding:12,cornerRadius:8,
+          callbacks:{label:ctx=>` ${ctx.raw} 人 (${Math.round(ctx.raw/total*100)}%)`}
+        }
+      },
+      scales:{
+        x:{beginAtZero:true,grid:{color:'#f0f4f8'},ticks:{font:{size:11},color:'#8b9eb0'}},
+        y:{grid:{display:false},ticks:{font:{size:11,family:'inherit'},color:'#5a6d80'}}
+      },
+      animation:{duration:800,easing:'easeOutQuart'}
+    }
+  });
+}
+
+// ===== Likert柱状图（带刻度标注） =====
+function renderLikertBar(ctx, cid, labels, values, rowTitle, total) {
+  chartInstances[cid] = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels,
+      datasets:[{
+        label:rowTitle, data:values,
+        backgroundColor:labels.map((_,i)=>PALETTE.likertAlpha[i]||PALETTE.doughnut[i]),
+        borderColor:labels.map((_,i)=>PALETTE.likert[i]||PALETTE.doughnut[i]),
+        borderWidth:2, borderRadius:6, borderSkipped:false,
+        barThickness:36, maxBarThickness:48,
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'rgba(15,26,46,0.9)',padding:12,cornerRadius:8,
+          callbacks:{label:ctx=>` ${ctx.raw} 人 (${Math.round(ctx.raw/total*100)}%)`}
+        }
+      },
+      scales:{
+        y:{beginAtZero:true,grid:{color:'#f0f4f8'},ticks:{font:{size:11},stepSize:Math.max(1,Math.ceil(Math.max(...values,1)/5))}},
+        x:{grid:{display:false},
+          ticks:{font:{size:11},callback:function(v,idx){return v},
+          },
+        }
+      },
+      animation:{duration:900,easing:'easeOutQuart'}
+    }
+  });
+
+  // 添加1-5分含义标注
+  const card = ctx.canvas.parentElement;
+  if (card) {
+    let anno = card.querySelector('.likert-scale-anno');
+    if (!anno) {
+      anno = document.createElement('div');
+      anno.className = 'likert-scale-anno';
+      anno.innerHTML = '<span>⬅ 1=最低</span><span>3=中等</span><span>5=最高 ➔</span>';
+      card.insertBefore(anno, card.firstChild);
+    }
+  }
+}
+
+// ===== 矩阵分组柱状图 =====
+function renderMatrixChart(ctx, cid, qd, q) {
+  const prefix = q.id+'_';
+  const subKeys = Object.keys(statsData.sections).filter(k=>k.startsWith(prefix));
+
+  if (subKeys.length===0) {
+    // 使用预定义行标签
+    const fallbackRows = q.rows && q.rows.length ? q.rows : ['暂无数据'];
+    renderHorizBar(ctx,cid,fallbackRows.map(r=>cleanLabel(r)),fallbackRows.map(()=>0),1);
+    return;
+  }
+
+  const rowLabels = subKeys.map(k=>{
+    let label = k.substring(prefix.length);
+    // 尝试用预定义行标签美化
+    if (q.rows && q.rows.length) {
+      const matched = q.rows.find(r => label.includes(r) || r.includes(label));
+      if (matched) label = cleanLabel(matched);
+    }
+    return cleanLabel(label);
+  });
+
+  const maxScale = 5;
+  const rowData = subKeys.map(k=>{
+    const cc = statsData.sections[k].counts;
+    return Array.from({length:maxScale},(_,i)=>cc[String(i+1)]||0);
+  });
+
+  // >5行切换为横向堆叠（更易读）
+  const useHorizontal = rowLabels.length > 5;
+  const likertLabels = Array.from({length:maxScale},(_,i)=>(i+1)+'分');
+  const datasets = likertLabels.map((lb,li)=>({
+    label:lb, data:rowData.map(rd=>rd[li]),
+    backgroundColor:PALETTE.likertAlpha[li],
+    borderColor:PALETTE.likert[li],
+    borderWidth:1.5, borderRadius:4,
+  }));
+
+  chartInstances[cid] = new Chart(ctx, {
+    type:'bar',
+    data:{labels:rowLabels,datasets},
+    options:{
+      indexAxis: useHorizontal ? 'y' : 'x',
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{position:'bottom',labels:{padding:12,usePointStyle:true,pointStyleWidth:8,font:{size:10,family:'inherit'},color:'#5a6d80'}},
+        tooltip:{mode:'index',intersect:false,backgroundColor:'rgba(15,26,46,0.9)',padding:12,cornerRadius:8}
+      },
+      scales:{
+        x:{stacked:true,grid:{display:!useHorizontal},ticks:{font:{size:10},color:'#8b9eb0'}},
+        y:{stacked:true,beginAtZero:true,grid:{color:'#f0f4f8'},ticks:{font:{size:11},color:'#8b9eb0',stepSize:1}}
+      },
+      animation:{duration:900,easing:'easeOutQuart'}
+    }
+  });
+}
+
+// ========== 交叉分析 ==========
+async function loadCrossAnalysis(silent) {
+  const mc = document.getElementById('main-content');
+  if (!silent) mc.innerHTML = '<div class="spinner">加载交叉分析...</div>';
+  try {
+    const r = await fetch(API_BASE+'/api/admin/cross',{headers:{'X-Admin-Token':adminToken}});
+    if (!r.ok) throw new Error('服务器返回错误 ('+r.status+')');
+    crossData = await r.json();
+    if (!crossData.by_size.length && !crossData.by_industry.length) {
+      mc.innerHTML = '<div class="empty-state"><div class="empty-icon">📊</div><h2>数据不足</h2><p>需要更多问卷数据才能生成交叉分析</p></div>';
+    } else {
+      destroyAllCharts();
+      renderCrossAnalysis(crossData);
+    }
+    startAutoRefresh();
+  } catch(e) {
+    if (!silent) mc.innerHTML = `<div style="text-align:center;padding:80px;color:var(--c-danger);">加载失败: ${e.message}</div>`;
+    startAutoRefresh();
+  }
+}
+
+function renderCrossAnalysis(data) {
+  const mc = document.getElementById('main-content');
+  let h = '<h3 style="margin-bottom:16px;font-size:16px;">📊 交叉分析：AI应用渗透率 × 企业特征</h3>';
+
+  // 按规模
+  h += '<div class="cross-grid">';
+  if (data.by_size.length) {
+    h += `<div class="chart-card" style="animation-delay:0.02s">
+      <div class="card-header"><div class="card-title">🏭 AI渗透率 × 企业规模</div></div>
+      <div class="card-body"><canvas id="cross-size"></canvas></div>
+    </div>`;
+  }
+  if (data.by_industry.length) {
+    h += `<div class="chart-card" style="animation-delay:0.06s">
+      <div class="card-header"><div class="card-title">🏢 AI渗透率 × 子行业</div></div>
+      <div class="card-body"><canvas id="cross-industry"></canvas></div>
+    </div>`;
+  }
+  h += '</div>';
+
+  // 详细数据表
+  h += '<div class="table-card" style="margin-top:16px;">';
+  h += '<div class="table-header"><h3>📋 详细数据</h3></div>';
+  h += '<div style="overflow-x:auto;"><table class="tbl"><thead><tr><th>维度</th><th>分组</th><th>企业总数</th><th>已应用AI</th><th>AI渗透率</th></tr></thead><tbody>';
+
+  data.by_size.forEach(d=>{
+    h += `<tr><td>企业规模</td><td>${d.label}</td><td>${d.total}</td><td>${d.has_ai}</td><td><b>${d.rate}%</b></td></tr>`;
+  });
+  data.by_industry.forEach(d=>{
+    h += `<tr><td>子行业</td><td>${d.label}</td><td>${d.total}</td><td>${d.has_ai}</td><td><b>${d.rate}%</b></td></tr>`;
+  });
+
+  h += '</tbody></table></div></div>';
+  mc.innerHTML = h;
+
+  // 渲染图表
+  requestAnimationFrame(()=>{
+    if (data.by_size.length) renderCrossChart('cross-size', data.by_size, 'AI渗透率(%)');
+    if (data.by_industry.length) renderCrossChart('cross-industry', data.by_industry, 'AI渗透率(%)');
+  });
+}
+
+function renderCrossChart(cid, items, yLabel) {
+  const cv = document.getElementById(cid);
+  if (!cv) return;
+  const ctx = cv.getContext('2d');
+  const labels = items.map(i=>i.label);
+  const rates = items.map(i=>i.rate);
+  const totals = items.map(i=>i.total);
+
+  chartInstances[cid] = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        {
+          label:'AI渗透率', data:rates,
+          backgroundColor:rates.map(r=>r>=50 ? 'rgba(34,197,94,0.8)' : r>=30 ? 'rgba(245,158,11,0.8)' : 'rgba(239,68,68,0.8)'),
+          borderRadius:8, borderSkipped:false,
+          barThickness:32,
+        },
+        {
+          label:'企业总数', data:totals,
+          type:'line',
+          borderColor:'#8b9eb0', backgroundColor:'transparent',
+          borderWidth:2, pointRadius:3, pointBackgroundColor:'#8b9eb0',
+          yAxisID:'y1',
+        }
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{position:'bottom',labels:{padding:12,usePointStyle:true,font:{size:11}}},
+        tooltip:{backgroundColor:'rgba(15,26,46,0.9)',padding:12,cornerRadius:8}
+      },
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:11}}},
+        y:{beginAtZero:true,max:100,grid:{color:'#f0f4f8'},ticks:{font:{size:11},callback:v=>v+'%',color:'#8b9eb0'},title:{display:true,text:'AI渗透率',font:{size:11}}},
+        y1:{position:'right',beginAtZero:true,grid:{display:false},ticks:{font:{size:11},color:'#8b9eb0'}}
+      },
+      animation:{duration:900,easing:'easeOutQuart'}
+    }
+  });
+}
+
+// ========== 题目定义（修复矩阵行标签 + 新增Likert标注） ==========
+function getSectionQuestions(key) {
+  const map = {
+    'basic':[
+      {id:'A1',type:'radio',title:'企业所属子行业'},
+      {id:'A2',type:'radio',title:'企业规模（年营收）'},
+      {id:'A3',type:'radio',title:'近三年营收趋势'},
+      {id:'A4',type:'radio',title:'企业员工总数'},
+      {id:'A5',type:'radio',title:'技术人员占比'},
+      {id:'A6',type:'radio',title:'员工数量变化趋势'},
+      {id:'A7',type:'radio',title:'填答人身份/职务'},
+      {id:'A8',type:'radio',title:'数字化/智能化管理部门'},
+      {id:'A9',type:'radio',title:'一线操作岗招工难度'},
+      {id:'A10',type:'radio',title:'招聘到岗平均时间'},
+    ],
+    'ai_status':[
+      {id:'B1',type:'checkbox',title:'AI技术应用环节'},
+      {id:'B2',type:'matrix',title:'AI各环节应用程度评价（1=很低,5=很高）',rows:[
+        '花型/款式AI设计','面料疵点AI质检','智能排产与生产调度','供应链智能管理','客户服务与营销','仓储物流智能化','经营数据分析与预测','设备预测性维护'
+      ]},
+      {id:'B3',type:'checkbox',title:'使用的主要AI工具/系统'},
+      {id:'B4',type:'radio',title:'最早引入AI时间'},
+      {id:'B5',type:'radio',title:'AI累计投入金额'},
+      {id:'B6',type:'radio',title:'AI投入产出效果'},
+      {id:'B7',type:'likert',title:'AI对生产效率提升程度（1=无提升,5=显著提升）',rows:['提升程度']},
+      {id:'B8',type:'checkbox',title:'未应用AI的主要障碍'},
+      {id:'B9',type:'radio',title:'未来1-2年AI投入计划'},
+      {id:'B10',type:'radio',title:'南通与长三角城市AI对比'},
+    ],
+    'job_skills':[
+      {id:'C1',type:'checkbox',title:'当前最紧缺岗位类型'},
+      {id:'C2',type:'radio',title:'紧缺岗位缺口数量'},
+      {id:'C3',type:'checkbox',title:'AI带来的岗位结构变化'},
+      {id:'C4',type:'radio',title:'人员结构变化方向'},
+      {id:'C5',type:'checkbox',title:'人员可能缩减的传统岗位'},
+      {id:'C6',type:'likert',title:'AI对岗位结构影响程度（1=无影响,5=影响巨大）',rows:['影响程度']},
+      {id:'C7',type:'checkbox',title:'需要技能升级的岗位'},
+      {id:'C8',type:'checkbox',title:'AI催生的新岗位类型'},
+      {id:'C9',type:'likert',title:'AI工具能力在招聘中的重要性（1=不重要,5=非常重要）',rows:['重要程度']},
+      {id:'C10',type:'checkbox',title:'企业最看重的数字技能'},
+      {id:'C11',type:'radio',title:'AI对工艺知识要求的影响'},
+      {id:'C12',type:'likert',title:'复合型人才需求程度（1=不需要,5=非常需要）',rows:['需求程度']},
+      {id:'C13',type:'radio',title:'AI对一线操作岗数量的影响'},
+      {id:'C14',type:'radio',title:'未来3-5年最紧缺人才类型'},
+      {id:'C15',type:'matrix',title:'各类岗位AI技能缺口程度（1=无缺口,5=缺口很大）',rows:[
+        '管理层/生产技术主管','技术骨干/工程师/技师','一线操作工'
+      ]},
+    ],
+    'talent_supply':[
+      {id:'D1',type:'likert',title:'招聘纺织技能人才困难程度（1=不困难,5=非常困难）',rows:['困难程度']},
+      {id:'D2',type:'checkbox',title:'招聘困难最突出的岗位'},
+      {id:'D3',type:'checkbox',title:'招聘困难的主要原因'},
+      {id:'D4',type:'radio',title:'高职毕业生入职情况'},
+      {id:'D5',type:'matrix',title:'高职毕业生能力评价（1=很弱,5=很强）',rows:[
+        '纺织专业知识','动手实操能力','AI/数字化工具使用','职业素养','学习与适应能力'
+      ]},
+      {id:'D6',type:'radio',title:'与高职院校合作现状'},
+      {id:'D7',type:'checkbox',title:'校企合作主要形式'},
+      {id:'D8',type:'checkbox',title:'期望加强的合作方向'},
+      {id:'D9',type:'checkbox',title:'高职毕业生主要优势'},
+    ],
+    'policy':[
+      {id:'E1',type:'radio',title:'对AI人才政策的了解程度'},
+      {id:'E2',type:'checkbox',title:'已享受过的政策支持'},
+      {id:'E3',type:'checkbox',title:'希望政府加强的方面'},
+      {id:'E4',type:'radio',title:'企业对员工培训的态度'},
+      {id:'E5',type:'radio',title:'参加政府AI培训的意愿'},
+      {id:'E6',type:'radio',title:'参与制定岗位技能标准的意愿'},
+      {id:'E7',type:'checkbox',title:'应对AI人才短缺的途径'},
+    ]
+  };
+  return map[key]||[];
+}
+
+// ========== 工具 ==========
+function cleanLabel(l) {
+  if (!l) return '';
+  let c = l.replace(/^[A-J]\.\s*/,'');
+  if (c.length>30) c = c.substring(0,28)+'…';
+  return c;
+}
+
+// ========== 问卷列表（带搜索筛选） ==========
+async function loadResponses(page, silent) {
+  if (page) responsesPage = page;
+  const mc = document.getElementById('main-content');
+  if (!silent) mc.innerHTML = '<div class="spinner">加载问卷列表...</div>';
+
+  const params = new URLSearchParams({page:responsesPage,per_page:15});
+  if (responsesFilters.search) params.set('search', responsesFilters.search);
+  if (responsesFilters.industry) params.set('industry', responsesFilters.industry);
+  if (responsesFilters.size) params.set('size', responsesFilters.size);
+
+  try {
+    const r = await fetch(API_BASE+'/api/admin/responses?'+params.toString(),{headers:{'X-Admin-Token':adminToken}});
+    if (!r.ok) throw new Error('服务器返回错误 ('+r.status+')');
+    const d = await r.json();
+    if (d.total===0) {
+      mc.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div><h2>暂无匹配的问卷记录</h2></div>';
+      return;
+    }
+
+    let h = '';
+
+    // 搜索/筛选栏
+    h += `<div class="search-bar">
+      <input type="text" id="resp-search" placeholder="🔍 搜索任意字段..." value="${escHtml(responsesFilters.search)}" onchange="applyFilter('search',this.value)" />
+      <select id="resp-industry" onchange="applyFilter('industry',this.value)">
+        <option value="">全部子行业</option>
+        <option value="纺纱" ${responsesFilters.industry==='纺纱'?'selected':''}>纺纱</option>
+        <option value="织造" ${responsesFilters.industry==='织造'?'selected':''}>织造</option>
+        <option value="印染" ${responsesFilters.industry==='印染'?'selected':''}>印染</option>
+        <option value="服装" ${responsesFilters.industry==='服装'?'selected':''}>服装</option>
+        <option value="家纺" ${responsesFilters.industry==='家纺'?'selected':''}>家纺</option>
+        <option value="化纤" ${responsesFilters.industry==='化纤'?'selected':''}>化纤</option>
+        <option value="纺织机械制造" ${responsesFilters.industry==='纺织机械制造'?'selected':''}>纺织机械制造</option>
+      </select>
+      <select id="resp-size" onchange="applyFilter('size',this.value)">
+        <option value="">全部规模</option>
+        <option value="1" ${responsesFilters.size==='1'?'selected':''}>规上企业</option>
+        <option value="2" ${responsesFilters.size==='2'?'selected':''}>1000-2000万</option>
+        <option value="3" ${responsesFilters.size==='3'?'selected':''}>500-1000万</option>
+        <option value="4" ${responsesFilters.size==='4'?'selected':''}>500万以下</option>
+      </select>
+      ${(responsesFilters.search||responsesFilters.industry||responsesFilters.size) ? `<button class="btn btn-sm btn-ghost" onclick="clearFilters()">✕ 清除筛选</button>` : ''}
+    </div>`;
+
+    h += `<div class="table-card">
+      <div class="table-header">
+        <h3>📄 问卷列表（共 ${d.total} 条）</h3>
+        <button class="btn btn-primary" onclick="exportData()">⬇ 导出CSV</button>
+      </div>
+      <div style="overflow-x:auto;"><table class="tbl"><thead><tr>
+        <th>ID</th><th>提交时间</th><th>耗时</th><th>子行业</th><th>企业规模</th><th>填答人</th><th>AI应用</th><th>操作</th>
+      </tr></thead><tbody>`;
+
+    d.items.forEach(it=>{
+      const dd = it.data;
+      const a1 = (dd.A1||'-').substring(0,18);
+      const a2 = (dd.A2||'-').substring(0,14);
+      const a7 = (dd.A7||'-').substring(0,14);
+      const b1 = Array.isArray(dd.B1) ? dd.B1.map(v=>v.substring(0,8)).slice(0,2).join(', ') : '-';
+      const dur = it.duration ? Math.floor(it.duration/60)+'′'+(it.duration%60)+'″' : '-';
+      h += `<tr>
+        <td class="id-cell">#${it.id}</td>
+        <td class="time-cell">${it.submit_time}</td>
+        <td>${dur}</td>
+        <td style="font-size:12px;">${a1}</td>
+        <td style="font-size:12px;">${a2}</td>
+        <td style="font-size:12px;">${a7}</td>
+        <td style="font-size:12px;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${b1}</td>
+        <td>
+          <button class="btn btn-sm btn-ghost" onclick="viewDetail(${it.id})">查看</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteResponse(${it.id})">删除</button>
+        </td>
+      </tr>`;
+    });
+    h += '</tbody></table></div></div>';
+
+    if (d.total_pages>1) {
+      h += '<div class="pgn">';
+      for (let i=1;i<=d.total_pages;i++) {
+        h += `<span class="${i===responsesPage?'active':''}" onclick="loadResponses(${i})">${i}</span>`;
+      }
+      h += '</div>';
+    }
+    mc.innerHTML = h;
+    startAutoRefresh();
+  } catch(e) {
+    mc.innerHTML = `<div style="text-align:center;padding:80px;color:var(--c-danger);">加载失败: ${e.message}</div>`;
+    startAutoRefresh();
+  }
+}
+
+function applyFilter(key, value) {
+  responsesFilters[key] = value;
+  responsesPage = 1;
+  loadResponses(1);
+}
+
+function clearFilters() {
+  responsesFilters = {search:'',industry:'',size:''};
+  responsesPage = 1;
+  loadResponses(1);
+}
+
+function escHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ========== 详情/删除/导出 ==========
+async function viewDetail(id) {
+  try {
+    const r = await fetch(API_BASE+'/api/admin/responses/'+id,{headers:{'X-Admin-Token':adminToken}});
+    const d = await r.json();
+    const ov = document.createElement('div'); ov.className='modal-overlay';
+    ov.onclick = e=>{if(e.target===ov)ov.remove()};
+
+    let h = `<div class="modal-box" onclick="event.stopPropagation()">
+      <h3>📋 问卷详情 #${d.id}</h3>
+      <p class="modal-meta">提交时间: ${d.submit_time} · 耗时: ${Math.floor(d.duration/60)}分${d.duration%60}秒</p>`;
+    const allSecs = [
+      {t:'一、基本信息',qs:['A1','A2','A3','A4','A5','A6','A7','A8','A9','A10']},
+      {t:'二、AI技术应用现状',qs:['B1','B2','B3','B4','B5','B6','B7','B8','B9','B10']},
+      {t:'三、岗位与技能需求变化',qs:['C1','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12','C13','C14','C15']},
+      {t:'四、人才供给与校企合作',qs:['D1','D2','D3','D4','D5','D6','D7','D8','D9']},
+      {t:'五、政策认知与需求',qs:['E1','E2','E3','E4','E5','E6','E7','E8']}
+    ];
+    allSecs.forEach(sec=>{
+      h += `<div class="detail-section"><h4>${sec.t}</h4>`;
+      sec.qs.forEach(qid=>{
+        const v = d.data[qid];
+        if (v!==undefined&&v!==null&&v!=='') {
+          const disp = Array.isArray(v) ? v.join('；') : String(v);
+          h += `<div class="detail-item"><span class="dk">${qid}</span><span class="dv">${disp}</span></div>`;
+        }
+      });
+      h += '</div>';
+    });
+    h += '<button class="btn btn-primary" style="margin-top:16px;" onclick="this.closest(\'.modal-overlay\').remove()">关闭</button></div>';
+    ov.innerHTML = h;
+    document.body.appendChild(ov);
+  } catch { showToast('加载详情失败','error'); }
+}
+
+async function deleteResponse(id) {
+  if (!confirm('确定删除此问卷记录？此操作不可撤销！')) return;
+  try {
+    const r = await fetch(API_BASE+'/api/admin/responses/'+id,{method:'DELETE',headers:{'X-Admin-Token':adminToken}});
+    if (r.ok) { showToast('删除成功','success'); if(currentTab==='responses')loadResponses(responsesPage); else loadDashboard(); }
+  } catch { showToast('删除失败','error'); }
+}
+
+async function exportData() {
+  try {
+    const r = await fetch(API_BASE+'/api/admin/export',{headers:{'X-Admin-Token':adminToken}});
+    if (!r.ok) { showToast('导出失败','error'); return; }
+    const blob = await r.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href=url; a.download='survey_export_'+new Date().toISOString().slice(0,10)+'.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url); showToast('导出成功','success');
+  } catch { showToast('导出失败','error'); }
+}
+
+function showToast(msg,type) {
+  const t = document.getElementById('toast');
+  t.textContent=msg; t.className='toast '+(type||'')+' show';
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+</script>
+</body>
+</html>
