@@ -1,0 +1,1730 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="format-detection" content="telephone=no">
+<title>企业AI应用与技能需求调查问卷</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --primary: #2B5C8F;
+  --primary-light: #3A7BD5;
+  --bg: #f0f4f8;
+  --card-bg: #fff;
+  --text: #333;
+  --text-light: #666;
+  --border: #e0e0e0;
+  --danger: #e74c3c;
+  --success: #27ae60;
+  --warning: #f39c12;
+  --radius: 12px;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #1a3a5c 0%, #2B5C8F 50%, #3A7BD5 100%);
+  color: #fff;
+  padding: 24px 20px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120%;
+  height: 40px;
+  background: var(--bg);
+  border-radius: 50%;
+}
+.header h1 {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+.header .subtitle {
+  font-size: 12px;
+  opacity: 0.85;
+  margin-top: 4px;
+}
+.header .org {
+  font-size: 11px;
+  opacity: 0.7;
+  margin-top: 6px;
+}
+
+/* Main Container */
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 12px 16px 40px;
+}
+
+/* Progress Bar */
+.progress-wrap {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.progress-bar {
+  height: 6px;
+  background: #e8ecf1;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3A7BD5, #2B5C8F);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+.progress-text {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+/* Section */
+.section {
+  display: none;
+}
+.section.active { display: block; }
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 4px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--primary);
+}
+.section-desc {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  background: #fef9e7;
+  border-radius: 8px;
+  border-left: 3px solid var(--warning);
+}
+
+/* Section Completion Badge */
+.section-completion {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-light);
+  background: #f0f4f8;
+  padding: 5px 14px;
+  border-radius: 14px;
+  margin-bottom: 14px;
+  transition: all 0.3s ease;
+}
+.section-completion.complete {
+  background: #e8f5e9;
+  color: var(--success);
+  font-weight: 600;
+}
+.section-completion .completion-icon {
+  font-size: 14px;
+}
+
+/* Intro Section */
+.intro-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.intro-card p {
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: #444;
+}
+.intro-card .contact {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+}
+
+/* Question Card */
+.q-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 18px 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  transition: box-shadow 0.2s;
+}
+.q-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.q-card.answered {
+  border-left: 3px solid var(--success);
+  padding-left: 15px;
+}
+.q-card.answered .q-num {
+  background: var(--success);
+}
+.q-card.required-missing {
+  border: 1px solid var(--danger);
+  animation: shake 0.4s ease;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+.q-num {
+  display: inline-block;
+  background: var(--primary);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 10px;
+  margin-bottom: 6px;
+}
+.q-type {
+  display: inline-block;
+  font-size: 11px;
+  color: var(--primary);
+  background: #e8f0fe;
+  padding: 2px 8px;
+  border-radius: 8px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.q-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 8px 0 12px;
+  color: #222;
+}
+
+/* Options */
+.options { display: flex; flex-direction: column; gap: 8px; }
+.opt-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+  font-size: 14px;
+  -webkit-tap-highlight-color: transparent;
+}
+.opt-item:hover { background: #edf2f9; }
+.opt-item.selected { background: #e0ecfa; border-color: #3A7BD5; }
+
+.opt-radio, .opt-check {
+  width: 20px; height: 20px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  transition: all 0.15s;
+}
+.opt-check { border-radius: 4px; }
+.opt-item.selected .opt-radio { border-color: var(--primary); background: #fff; }
+.opt-item.selected .opt-radio::after {
+  content: '';
+  width: 10px; height: 10px;
+  background: var(--primary);
+  border-radius: 50%;
+}
+.opt-item.selected .opt-check { border-color: var(--primary); background: var(--primary); }
+.opt-item.selected .opt-check::after {
+  content: '✓';
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+.opt-text { flex: 1; line-height: 1.5; }
+
+/* Other input */
+.opt-other-wrap {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+.opt-other-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.opt-other-input:focus { border-color: var(--primary); }
+
+/* Likert Scale */
+.likert-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+  flex-wrap: wrap;
+}
+.likert-label {
+  font-size: 13px;
+  min-width: 120px;
+  color: #444;
+  line-height: 1.4;
+}
+.likert-opts {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+.likert-btn {
+  width: 34px; height: 34px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+}
+.likert-btn:hover { border-color: var(--primary); }
+.likert-btn.selected {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+/* Open Text */
+.textarea-wrap textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+.textarea-wrap textarea:focus { border-color: var(--primary); }
+.char-count {
+  text-align: right;
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+/* Buttons */
+.btn-wrap {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  padding-bottom: 20px;
+}
+.btn {
+  flex: 1;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  text-align: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-outline {
+  background: #fff;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+}
+.btn-outline:hover { background: #f0f4fa; }
+.btn-primary {
+  background: linear-gradient(135deg, #3A7BD5, #2B5C8F);
+  color: #fff;
+}
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-size: 14px;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; }
+.toast.success { background: var(--success); }
+.toast.error { background: var(--danger); }
+
+/* Loading Overlay */
+.loading-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.2s ease;
+}
+.loading-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 40px 48px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+}
+.loading-spinner {
+  width: 48px; height: 48px;
+  border: 4px solid #e0e0e0;
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 20px;
+}
+.loading-text {
+  font-size: 15px; color: #555;
+  margin: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Success Page */
+.success-page {
+  text-align: center;
+  padding: 60px 20px;
+}
+.success-icon {
+  width: 80px; height: 80px;
+  background: var(--success);
+  border-radius: 50%;
+  margin: 0 auto 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.success-icon::after {
+  content: '✓';
+  color: #fff;
+  font-size: 36px;
+  font-weight: 700;
+}
+.success-page h2 { font-size: 22px; margin-bottom: 8px; }
+.success-page p { color: var(--text-light); font-size: 14px; margin-bottom: 8px; }
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  animation: fadeIn 0.2s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px 20px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+}
+.modal-box h3 { font-size: 17px; margin-bottom: 8px; }
+.modal-box p { font-size: 14px; color: var(--text-light); margin-bottom: 20px; }
+.modal-btns { display: flex; gap: 10px; }
+.modal-btns .btn { font-size: 14px; padding: 10px; }
+
+@media (max-width: 480px) {
+  .container { padding: 8px 10px 40px; }
+  .header h1 { font-size: 17px; }
+  .section-title { font-size: 16px; }
+  .q-title { font-size: 14px; }
+  .likert-label { min-width: 90px; font-size: 12px; }
+  .likert-btn { width: 30px; height: 30px; font-size: 12px; }
+}
+/* 超小屏 Likert 横向滚动优化 */
+@media (max-width: 375px) {
+  .likert-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 6px;
+  }
+  .likert-label {
+    min-width: 80px;
+    flex-shrink: 0;
+  }
+  .likert-opts {
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+  }
+  .likert-btn {
+    width: 28px; height: 28px; font-size: 11px;
+  }
+}
+/* 草稿保存提示 */
+.draft-indicator {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  z-index: 900;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.draft-indicator.show { opacity: 1; }
+/* 已提交页面 */
+.already-submitted {
+  text-align: center;
+  padding: 60px 20px;
+}
+.already-submitted .icon {
+  width: 72px; height: 72px;
+  background: var(--warning);
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+/* 完成度百分比 */
+.section-completion .pct {
+  font-size: 12px;
+  margin-left: 4px;
+  font-weight: 600;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>企业AI应用与技能需求调查问卷</h1>
+  <div class="subtitle">优化版 V3.1</div>
+  <div class="org">南通市科技创新智库课题 · 江苏工程职业技术学院</div>
+</div>
+
+<div class="container" id="app">
+  <!-- 问卷介绍页 -->
+  <div class="section active" id="sec-intro">
+    <div class="intro-card">
+      <p><strong>尊敬的受访者：</strong></p>
+      <p>您好！本问卷是南通市科技创新智库课题"人工智能赋能南通纺织产业转型中的技能人才供需矛盾与对策研究"的重要组成部分，旨在了解南通纺织企业在AI技术应用和技能人才需求方面的实际情况。您的回答将为政府制定产业人才政策、高职院校优化人才培养方案提供重要参考。</p>
+      <p>本问卷实行<strong>匿名填答</strong>，所有数据仅用于学术研究和政策分析，不涉及任何商业用途。我们承诺对您提供的信息<strong>严格保密</strong>。问卷预计填写时间为8-10分钟。</p>
+      <p style="text-align:center;color:var(--primary);font-weight:600;">衷心感谢您的支持与配合！</p>
+    </div>
+    <div class="btn-wrap">
+      <button class="btn btn-primary" onclick="startSurvey()" style="flex:1;">开始填写问卷</button>
+    </div>
+  </div>
+
+  <!-- 问卷内容由JS动态生成 -->
+  <div id="survey-content"></div>
+
+  <!-- 提交成功页 -->
+  <div class="section" id="sec-success">
+    <div class="success-page">
+      <div class="success-icon"></div>
+      <h2>提交成功！</h2>
+      <p>感谢您抽出宝贵时间完成本问卷</p>
+      <p style="color:var(--text-light);">您的回答将为我们提供重要的研究参考</p>
+    </div>
+  </div>
+
+  <!-- 已提交提示页 -->
+  <div class="section" id="sec-already-submitted">
+    <div class="already-submitted">
+      <div class="icon">✓</div>
+      <h2>您已提交过问卷</h2>
+      <p style="color:var(--text-light);">本问卷每人仅可提交一次</p>
+      <p style="color:var(--text-light);margin-top:8px;">感谢您的支持与参与！</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="draft-indicator" id="draft-indicator">草稿已保存</div>
+<div class="loading-overlay" id="loading-overlay" style="display:none;">
+  <div class="loading-box">
+    <div class="loading-spinner"></div>
+    <p class="loading-text" id="loading-text">正在提交问卷，请稍候...</p>
+  </div>
+</div>
+
+<script>
+// ==================== 问卷数据定义 ====================
+const SURVEY = {
+  sections: [
+    {
+      id: 'basic',
+      title: '一、基本信息',
+      questions: [
+        { id: 'A1', type: 'radio', title: '企业所属子行业：', opts: [
+          'A. 纺纱', 'B. 织造', 'C. 印染', 'D. 服装',
+          'E. 家纺', 'F. 化纤', 'G. 纺织机械制造', 'H. 其他（请注明）'
+        ], hasOther: 'H', required: true },
+        { id: 'A2', type: 'radio', title: '企业规模：', opts: [
+          'A. 规上企业（年主营业务收入2000万元及以上）',
+          'B. 1000-2000万元', 'C. 500-1000万元', 'D. 500万元以下'
+        ], required: true },
+        { id: 'A3', type: 'radio', title: '企业近三年整体营收趋势：', opts: [
+          'A. 持续增长', 'B. 基本持平', 'C. 有所下降', 'D. 波动较大', 'E. 不便透露'
+        ], required: true },
+        { id: 'A4', type: 'radio', title: '企业员工总数（截至2025年底）：', opts: [
+          'A. 50人以下', 'B. 50-199人', 'C. 200-499人', 'D. 500-999人', 'E. 1000人及以上'
+        ], required: true },
+        { id: 'A5', type: 'radio', title: '企业技术人员（含研发、质检、设备维护等）约占员工总数的比例：', opts: [
+          'A. 5%以下', 'B. 5%-10%', 'C. 11%-20%', 'D. 21%-30%', 'E. 30%以上'
+        ], required: true },
+        { id: 'A6', type: 'radio', title: '近三年企业员工总数变化趋势：', opts: [
+          'A. 持续增加', 'B. 基本稳定', 'C. 略有减少', 'D. 明显减少'
+        ], required: true },
+        { id: 'A7', type: 'radio', title: '您的身份/职务：', opts: [
+          'A. 企业高管（总经理/副总经理等）', 'B. 人力资源部门负责人',
+          'C. 技术部门负责人', 'D. 生产部门负责人', 'E. 其他（请注明）'
+        ], hasOther: 'E', required: true },
+        { id: 'A8', type: 'radio', title: '贵企业是否设有专门的数字化/智能化管理部门或岗位？', opts: [
+          'A. 有独立部门', 'B. 有专职岗位但未设部门', 'C. 由其他部门兼管', 'D. 暂无'
+        ], required: true },
+        { id: 'A9', type: 'radio', title: '贵企业一线操作岗位（如挡车工、缝纫工等）最近一年是否存在招工难问题？', opts: [
+          'A. 非常严重', 'B. 比较严重', 'C. 有一定困难', 'D. 基本能招到', 'E. 不存在此问题'
+        ], required: true },
+        { id: 'A10', type: 'radio', title: '近一年，贵企业招聘一线技术岗位（如挡车工、质检员等），从发布招聘到人员正式到岗平均需要多长时间？', opts: [
+          'A. 1周以内', 'B. 1-2周', 'C. 2周-1个月', 'D. 1-3个月', 'E. 3个月以上', 'F. 常年招不到合适人员'
+        ], required: true }
+      ]
+    },
+    {
+      id: 'ai_status',
+      title: '二、AI技术应用现状',
+      desc: '【填写说明】如B1题选择了"I. 尚未应用任何AI技术"，请直接跳至本模块第B8题继续填答。',
+      questions: [
+        { id: 'B1', type: 'checkbox', title: '贵企业目前在哪些环节应用了AI或人工智能相关技术？（可多选）', opts: [
+          'A. 花型/款式AI设计', 'B. 面料疵点AI质检', 'C. 智能排产与生产调度',
+          'D. 供应链智能管理', 'E. 客户服务与营销（如AI客服）', 'F. 仓储物流智能化',
+          'G. 经营数据分析与预测', 'H. 设备预测性维护',
+          'I. 尚未应用任何AI技术', 'J. 其他（请注明）'
+        ], hasOther: 'J', skipTrigger: 'I' },
+        { id: 'B2', type: 'matrix', title: '请在您已应用的AI环节中，选出应用程度最深的2-3个环节，并评价其应用程度：', scaleLabels: ['1=初步探索','2=部分应用','3=规模化推广','4=深度集成','5=全面赋能'], rows: [
+          '花型/款式AI设计', '面料疵点AI质检', '智能排产与生产调度',
+          '供应链智能管理', '客户服务与营销', '仓储物流智能化',
+          '经营数据分析与预测', '设备预测性维护'
+        ], condition: { depends: 'B1', exclude: 'I. 尚未应用任何AI技术' } },
+        { id: 'B3', type: 'checkbox', title: '贵企业使用的主要AI工具或系统有哪些？（可多选+补充）', opts: [
+          'A. 百度文心一言', 'B. ChatGPT/GPT类工具',
+          'C. 通义千问/腾讯混元/字节豆包等大厂AI模型', 'D. DeepSeek/智谱清言/Kimi等',
+          'E. AI Agent/智能体平台（如扣子Coze、Dify等）', 'F. 企业自研AI系统/ERP内置AI模块',
+          'G. 其他（请注明）'
+        ], hasOther: 'G' },
+        { id: 'B4', type: 'radio', title: '贵企业最早引入AI技术的时间是：', opts: [
+          'A. 2024年以来', 'B. 2022-2023年', 'C. 2020-2021年', 'D. 2019年及以前', 'E. 尚未引入'
+        ] },
+        { id: 'B5', type: 'radio', title: '企业近三年在AI技术应用方面的累计投入大约为（含软硬件、人员培训等）：', opts: [
+          'A. 10万元以下', 'B. 10-50万元', 'C. 50-200万元', 'D. 200-500万元', 'E. 500万元以上', 'F. 暂无投入'
+        ] },
+        { id: 'B6', type: 'radio', title: '（仅限已应用AI技术的企业回答）您认为AI技术应用对企业的投入产出效果如何？', opts: [
+          'A. 效果显著，明显提升了效率和效益', 'B. 有一定效果，但尚未达到预期',
+          'C. 效果不明显', 'D. 投入较大但未见回报', 'E. 目前难以评估'
+        ], condition: { depends: 'B1', exclude: 'I. 尚未应用任何AI技术' } },
+        { id: 'B7', type: 'likert', title: '（仅已应用AI企业回答）AI技术应用对贵企业生产效率的提升程度：', scaleLabels: ['0=未应用','1=无明显提升','2=略有提升(10%以内)','3=有一定提升(10%-30%)','4=提升较大(30%-50%)','5=提升显著(50%以上)'], rows: ['生产效率提升'], condition: { depends: 'B1', exclude: 'I. 尚未应用任何AI技术' } },
+        { id: 'B8', type: 'checkbox', title: '（如企业尚未大规模应用AI技术，请回答此题）主要障碍是什么？（可多选）', opts: [
+          'A. 资金投入不足', 'B. 缺乏AI技术人才', 'C. 现有员工对新技术有抵触',
+          'D. 管理层对AI认知不足', 'E. 企业数据基础薄弱', 'F. 不清楚哪些环节适合用AI',
+          'G. 担心投入风险', 'H. 现有设备和工艺难以对接AI系统',
+          'I. 行业整体应用氛围不浓', 'J. 其他（请注明）'
+        ], hasOther: 'J' },
+        { id: 'B9', type: 'radio', title: '贵企业未来1-2年是否有计划加大AI技术应用投入？', opts: [
+          'A. 有明确计划且预算已落实', 'B. 有初步计划，正在论证', 'C. 持观望态度', 'D. 暂无计划'
+        ] },
+        { id: 'B10', type: 'radio', title: '您认为南通纺织行业整体AI应用水平与长三角其他城市（如绍兴、苏州等）相比：', opts: [
+          'A. 领先', 'B. 基本持平', 'C. 稍显落后', 'D. 明显落后', 'E. 不了解'
+        ] }
+      ]
+    },
+    {
+      id: 'job_skills',
+      title: '三、AI带来的岗位与技能需求变化',
+      questions: [
+        { id: 'C1', type: 'checkbox', title: '近一年来，贵企业最紧缺的岗位类型是哪些？（可多选）', opts: [
+          'A. AI系统运维工程师', 'B. 工业数据分析师', 'C. 智能设备操作技工',
+          'D. AI辅助花型/款式设计师', 'E. 自动化产线维护技师', 'F. 数字化生产管理员',
+          'G. 质检/品控人员', 'H. 传统纺织工艺技师', 'I. 一线熟练操作工',
+          'J. 设备维修技工', 'K. 其他（请注明）'
+        ], hasOther: 'K' },
+        { id: 'C2', type: 'radio', title: '上述紧缺岗位中，估计总缺口数量约为：', opts: [
+          'A. 5人以下', 'B. 5-10人', 'C. 11-20人', 'D. 21-50人', 'E. 50人以上'
+        ] },
+        { id: 'C3', type: 'checkbox', title: '相比三年前，贵企业紧缺岗位的结构是否有以下变化？（可多选）', opts: [
+          'A. AI/数字化类岗位从无到有', 'B. 复合型岗位需求明显增加',
+          'C. 传统技术岗需求基本不变', 'D. 一线操作岗招工越来越难',
+          'E. 没有明显变化', 'F. 其他（请注明）'
+        ], hasOther: 'F' },
+        { id: 'C4', type: 'radio', title: 'AI技术引入后，贵企业人员结构最主要的变化方向是？', opts: [
+          'A. 以替代为主，部分岗位人员缩减', 'B. 以升级为主，原有岗位技能要求提升',
+          'C. 替代与新增并存，结构变化显著', 'D. 暂无显著变化'
+        ] },
+        { id: 'C5', type: 'checkbox', title: '随着AI技术引入，贵企业哪些传统岗位出现了人员缩减？（可多选）', opts: [
+          'A. 普通质检员', 'B. 基础设计人员（如描稿员）', 'C. 仓库管理员',
+          'D. 数据录入员', 'E. 一线操作工（挡车/缝纫等）', 'F. 排产调度员',
+          'G. 暂无岗位缩减', 'H. 其他（请注明）'
+        ], hasOther: 'H' },
+        { id: 'C6', type: 'likert', title: '总体而言，AI技术对贵企业岗位结构的影响程度：', scaleLabels: ['1=几乎没有影响','2=影响较小','3=有一定影响','4=影响较大','5=影响非常深远'], rows: ['影响程度'] },
+        { id: 'C7', type: 'checkbox', title: '哪些岗位因AI应用而亟需技能升级？（可多选）', opts: [
+          'A. 设备操作工（需掌握智能设备操作）', 'B. 质检员（需掌握AI质检系统）',
+          'C. 设计师（需掌握AI辅助设计工具）', 'D. 生产管理者（需掌握数据分析与智能调度）',
+          'E. 维修技师（需掌握智能设备维护）', 'F. 供应链人员', 'G. 暂无', 'H. 其他（请注明）'
+        ], hasOther: 'H' },
+        { id: 'C8', type: 'checkbox', title: '贵企业AI应用后是否催生了新的岗位类型？（可多选+补充）', opts: [
+          'A. AI系统管理员', 'B. 数据标注/预处理员', 'C. 数字化流程工程师',
+          'D. 人机协作产线管理员', 'E. 智能制造工程师', 'F. 暂无新岗位', 'G. 其他（请注明）'
+        ], hasOther: 'G' },
+        { id: 'C9', type: 'likert', title: 'AI工具使用能力在贵企业招聘中的重要性：', scaleLabels: ['1=完全不重要','2=不太重要','3=一般','4=比较重要','5=非常重要'], rows: ['重要程度'] },
+        { id: 'C10', type: 'checkbox', title: '贵企业在招聘时最看重候选人的哪些数字技能？（可多选）', opts: [
+          'A. AI系统操作与运维', 'B. 工业数据采集与分析', 'C. 智能设备/自动化设备操作',
+          'D. 数字化生产管理能力', 'E. 基础编程或脚本能力（Python/R等）',
+          'F. CAD/CAM等工业软件使用', 'G. AI工具应用（如AI设计/质检系统）',
+          'H. 暂无特殊要求', 'I. 其他（请注明）'
+        ], hasOther: 'I' },
+        { id: 'C11', type: 'radio', title: '与三年前相比，贵企业对新员工的纺织工艺知识要求有何变化？', opts: [
+          'A. 要求大幅提高', 'B. 要求有所提高', 'C. 基本不变',
+          'D. 有所降低（因为AI替代了部分工艺判断）', 'E. 难以判断'
+        ] },
+        { id: 'C12', type: 'likert', title: '贵企业对"纺织工艺+数据分析+AI应用"复合型人才的需求程度：', scaleLabels: ['1=完全不需要','2=暂不需要','3=有一定需求','4=比较需要','5=迫切需要'], rows: ['需求程度'] },
+        { id: 'C13', type: 'radio', title: 'AI应用对贵企业一线操作岗位的数量需求有什么影响？', opts: [
+          'A. 数量需求大幅减少', 'B. 有所减少但技能要求提高',
+          'C. 数量基本不变但技能要求提高', 'D. 数量需求反而增加', 'E. 暂时没有明显影响'
+        ] },
+        { id: 'C14', type: 'radio', title: '贵企业认为未来3-5年，以下哪类人才缺口最大？', opts: [
+          'A. 高端AI研发人才（硕士及以上）', 'B. AI应用型技术人才（高职/本科）',
+          'C. 懂AI的复合型管理人才', 'D. AI辅助下的高技能操作人才',
+          'E. 传统工艺+AI应用的"数字工匠"', 'F. 难以预测'
+        ] },
+        { id: 'C15', type: 'matrix', title: '贵企业是否有意愿为以下不同层级员工提供AI技能专项培训？（每行单选）', scaleLabels: ['1=非常不愿意','2=不太愿意','3=一般','4=比较愿意','5=非常愿意'], rows: [
+          '管理层（生产/技术主管）', '技术骨干（工程师/技师）', '一线操作工'
+        ] }
+      ]
+    },
+    {
+      id: 'talent_supply',
+      title: '四、人才供给与校企合作感知',
+      questions: [
+        { id: 'D1', type: 'likert', title: '近三年，贵企业在招聘纺织相关技能人才方面的困难程度：', scaleLabels: ['1=完全没有困难','2=偶尔有困难','3=有一定困难','4=困难较大','5=非常困难'], rows: ['困难程度'] },
+        { id: 'D2', type: 'checkbox', title: '招聘困难最突出的岗位是哪些？（可多选）', opts: [
+          'A. AI/数字化技术岗', 'B. 复合型技术岗（纺织+IT）', 'C. 一线熟练操作岗',
+          'D. 中高级管理岗', 'E. 普通操作工', 'F. 设备维护技工', 'G. 其他（请注明）'
+        ], hasOther: 'G' },
+        { id: 'D3', type: 'checkbox', title: '您认为招聘困难的主要原因是什么？（可多选）', opts: [
+          'A. 本地相关人才供给总量不足', 'B. 企业薪资竞争力不够',
+          'C. 岗位技能要求高、匹配人才少', 'D. 年轻人不愿进入制造业',
+          'E. 地理位置偏或工作环境一般', 'F. 高校培养方向与企业需求脱节',
+          'G. 行业社会形象/前景不被看好', 'H. 其他（请注明）'
+        ], hasOther: 'H' },
+        { id: 'D4', type: 'radio', title: '贵企业近三年是否有高职毕业生入职？', opts: [
+          'A. 有，且人数逐年增加', 'B. 有，人数基本稳定',
+          'C. 有，但人数逐年减少', 'D. 没有招聘过高职毕业生', 'E. 不清楚'
+        ] },
+        { id: 'D5', type: 'matrix', title: '如贵企业近三年有高职毕业生入职，请对其能力进行评价（如未招聘过，请跳过）：', scaleLabels: ['0=不了解','1=非常不满意','2=不满意','3=一般','4=满意','5=非常满意'], rows: [
+          '①纺织专业知识', '②动手实操能力', '③AI/数字工具使用能力', '④职业素养（责任心、纪律等）', '⑤学习与适应能力'
+        ] },
+        { id: 'D6', type: 'radio', title: '贵企业目前是否与高职院校开展了校企合作？', opts: [
+          'A. 有深度合作（如订单班/共建实训基地等）', 'B. 有一般合作（如接收实习生等）',
+          'C. 曾经合作现已中断', 'D. 从未合作', 'E. 正在接洽中'
+        ] },
+        { id: 'D7', type: 'checkbox', title: '如果有合作，主要形式是？（可多选，无合作不答）', opts: [
+          'A. 接收学生实习', 'B. 订单式培养/冠名班', 'C. 共建实训基地',
+          'D. 企业导师进课堂', 'E. 教师下企业实践', 'F. 联合技术研发',
+          'G. 员工在职学历提升', 'H. 其他（请注明）'
+        ], hasOther: 'H' },
+        { id: 'D8', type: 'checkbox', title: '贵企业最期望与高职院校在哪些方面加强合作？（可多选）', opts: [
+          'A. AI/数字化技能人才定向培养', 'B. 企业员工在职培训与技能提升',
+          'C. 共建AI应用实训基地', 'D. 联合开展技术攻关',
+          'E. 课程内容与企业需求对接', 'F. 提供更多实习岗位',
+          'G. 教师到企业挂职交流', 'H. 其他（请注明）'
+        ], hasOther: 'H' },
+        { id: 'D9', type: 'checkbox', title: '相比本科生，您认为高职毕业生在纺织企业中的优势是什么？（可多选）', opts: [
+          'A. 动手能力强、上手快', 'B. 更稳定、离职率低', 'C. 薪资期望更合理',
+          'D. 专业对口度高', 'E. 没有明显优势', 'F. 不了解', 'G. 其他（请注明）'
+        ], hasOther: 'G' }
+      ]
+    },
+    {
+      id: 'policy',
+      title: '五、政策认知与需求',
+      questions: [
+        { id: 'E1', type: 'radio', title: '您是否了解南通市出台的AI人才专项政策及相关人才扶持措施？', opts: [
+          'A. 非常了解', 'B. 了解一些', 'C. 听说过但不清楚具体内容', 'D. 完全不了解'
+        ] },
+        { id: 'E2', type: 'checkbox', title: '贵企业是否享受过以下政策支持？（可多选）', opts: [
+          'A. 技能人才培训补贴', 'B. 人才引进补贴（如生活补贴/安家费等）',
+          'C. 稳岗返还或社保减免', 'D. 校企合作专项补贴', 'E. 纺织电商技能培训专项',
+          'F. 产业工人技能提升培训', 'G. 未曾享受过相关政策', 'H. 其他（请注明）'
+        ], hasOther: 'H' },
+        { id: 'E3', type: 'checkbox', title: '您认为政府应在以下哪些方面加强对纺织企业的支持？（可多选）', opts: [
+          'A. 企业员工培训经费补贴', 'B. 引进AI/数字化人才补贴',
+          'C. 搭建校企合作对接平台', 'D. 提供AI技术应用咨询服务',
+          'E. 发布纺织行业紧缺岗位目录', 'F. 组织行业AI应用经验交流',
+          'G. 对中小企业AI技改给予专项资助', 'H. 改善园区生活配套（交通/住房）以吸引年轻人',
+          'I. 其他（请注明）'
+        ], hasOther: 'I' },
+        { id: 'E4', type: 'radio', title: '贵企业对在职员工技能培训的态度和投入意愿：', opts: [
+          'A. 非常重视，每年有固定培训预算', 'B. 比较重视，根据需要进行投入',
+          'C. 一般，仅限于必要培训', 'D. 投入较少，主要依靠员工自学', 'E. 暂无培训计划和预算'
+        ] },
+        { id: 'E5', type: 'radio', title: '如果政府提供AI技能培训补贴，贵企业愿意组织员工参加吗？', opts: [
+          'A. 非常愿意', 'B. 比较愿意', 'C. 视培训内容和质量而定', 'D. 不太愿意', 'E. 不愿意'
+        ] },
+        { id: 'E6', type: 'radio', title: '贵企业是否愿意参与政府牵头制定纺织行业AI技能标准或人才能力框架？', opts: [
+          'A. 非常愿意', 'B. 愿意', 'C. 视情况而定', 'D. 不太愿意', 'E. 不愿意'
+        ] },
+        { id: 'E7', type: 'checkbox', title: '您认为纺织企业应对AI人才短缺，最有效的途径是？（可多选）', opts: [
+          'A. 企业内部培训与转岗提升', 'B. 外部高薪引进AI人才',
+          'C. 与高校联合培养', 'D. 购买成熟的AI解决方案（减少自研需求）',
+          'E. 行业协会组织共享AI人才资源', 'F. 政府主导的人才引进计划', 'G. 其他（请注明）'
+        ], hasOther: 'G' },
+        { id: 'E8', type: 'textarea', title: '关于企业AI应用与技能人才供需，您还有哪些建议或想反映的问题？（开放题）', placeholder: '请输入您的建议和想法...', maxLength: 500 }
+      ]
+    }
+  ]
+};
+
+// ==================== 题目必填与条件设置 ====================
+// 所有题目默认必填（E8开放题除外）
+SURVEY.sections.forEach(sec => {
+  sec.questions.forEach(q => {
+    if (q.required === undefined) q.required = true;
+  });
+});
+// E8 开放题为选填
+const _e8 = SURVEY.sections[4].questions.find(q => q.id === 'E8');
+if (_e8) _e8.required = false;
+
+// B3/B4/B5: 仅在已应用AI时显示（B1不含"I. 尚未应用任何AI技术"）
+const _bSec = SURVEY.sections[1];
+['B3', 'B4', 'B5'].forEach(qid => {
+  const q = _bSec.questions.find(q => q.id === qid);
+  if (q) q.condition = { depends: 'B1', exclude: 'I. 尚未应用任何AI技术' };
+});
+// B8: 仅在未应用AI时显示（B1含"I. 尚未应用任何AI技术"）
+const _b8 = _bSec.questions.find(q => q.id === 'B8');
+if (_b8) _b8.condition = { depends: 'B1', include: 'I. 尚未应用任何AI技术' };
+
+// D5: 仅在招聘过高职毕业生时显示
+const _dSec = SURVEY.sections[3];
+const _d5 = _dSec.questions.find(q => q.id === 'D5');
+if (_d5) _d5.condition = { depends: 'D4', excludeAny: ['D. 没有招聘过高职毕业生', 'E. 不清楚'] };
+// D7: 仅在有校企合作时显示
+const _d7 = _dSec.questions.find(q => q.id === 'D7');
+if (_d7) _d7.condition = { depends: 'D6', exclude: 'D. 从未合作' };
+
+// ==================== 应用状态 ====================
+const state = {
+  currentSection: -1, // -1 = intro
+  answers: {},
+  startTime: 0,
+  submitting: false,
+  skippedQuestions: new Set(), // 根据条件跳过的题目
+  ipSubmitted: false // IP是否已提交过
+};
+
+// ==================== 草稿自动保存 ====================
+const DRAFT_KEY = 'survey_draft_v25';
+let draftTimer = null;
+
+function saveDraft() {
+  if (state.currentSection < 0 || state.ipSubmitted) return;
+  const draft = {
+    answers: state.answers,
+    currentSection: state.currentSection,
+    startTime: state.startTime,
+    savedAt: Date.now()
+  };
+  try {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    showDraftIndicator();
+  } catch(e) { /* localStorage不可用时静默 */ }
+}
+
+function loadDraft() {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch(e) { return null; }
+}
+
+function clearDraft() {
+  localStorage.removeItem(DRAFT_KEY);
+}
+
+let draftIndicatorTimer = null;
+function showDraftIndicator() {
+  const el = document.getElementById('draft-indicator');
+  if (!el) return;
+  el.classList.add('show');
+  clearTimeout(draftIndicatorTimer);
+  draftIndicatorTimer = setTimeout(() => el.classList.remove('show'), 1500);
+}
+
+// 防抖保存
+function debouncedSaveDraft() {
+  clearTimeout(draftTimer);
+  draftTimer = setTimeout(saveDraft, 800);
+}
+
+// ==================== 初始化 ====================
+function startSurvey() {
+  // 尝试恢复草稿
+  const draft = loadDraft();
+  if (draft && draft.answers && Object.keys(draft.answers).length > 0) {
+    // 有草稿，提示用户
+    showConfirm('发现未完成的草稿', '检测到您上次填写了部分内容，是否继续填写？', () => {
+      state.answers = draft.answers;
+      state.currentSection = draft.currentSection || 0;
+      state.startTime = draft.startTime || Date.now();
+      state.skippedQuestions = new Set();
+      renderAll();
+    }, () => {
+      // 重新开始
+      clearDraft();
+      state.startTime = Date.now();
+      state.currentSection = 0;
+      state.answers = {};
+      state.skippedQuestions = new Set();
+      renderAll();
+    });
+  } else {
+    state.startTime = Date.now();
+    state.currentSection = 0;
+    state.answers = {};
+    state.skippedQuestions = new Set();
+    renderAll();
+  }
+}
+
+function renderAll() {
+  const container = document.getElementById('survey-content');
+  if (state.currentSection < 0) {
+    container.innerHTML = '';
+    document.getElementById('sec-intro').classList.add('active');
+    return;
+  }
+
+  document.getElementById('sec-intro').classList.remove('active');
+
+  // 检查是否所有section已完成
+  if (state.currentSection >= SURVEY.sections.length) {
+    document.getElementById('sec-success').classList.add('active');
+    container.innerHTML = '';
+    return;
+  }
+
+  const sec = SURVEY.sections[state.currentSection];
+  let html = `<div class="section active" id="sec-${sec.id}">`;
+  html += `<div class="section-title">${sec.title}</div>`;
+  html += `<div class="section-completion" id="completion-badge"><span class="completion-icon">○</span> 已完成 <span id="completed-count">0</span>/<span id="total-count">0</span> 题</div>`;
+  if (sec.desc) html += `<div class="section-desc">${sec.desc}</div>`;
+  html += `<div id="questions-${sec.id}"></div>`;
+  html += `<div class="btn-wrap">`;
+
+  if (state.currentSection > 0) {
+    html += `<button class="btn btn-outline" onclick="prevSection()">上一步</button>`;
+  } else {
+    html += `<button class="btn btn-outline" onclick="state.currentSection=-1;renderAll();window.scrollTo(0,0);">返回首页</button>`;
+  }
+
+  if (state.currentSection < SURVEY.sections.length - 1) {
+    html += `<button class="btn btn-primary" onclick="nextSection()">下一步</button>`;
+  } else {
+    html += `<button class="btn btn-primary" id="submit-btn" onclick="submitSurvey()">提交问卷</button>`;
+  }
+
+  html += `</div></div>`;
+  container.innerHTML = html;
+
+  // 渲染题目
+  renderQuestions(sec);
+  updateProgress();
+  updateSectionCompletion();
+  updateQuestionStatus();
+  window.scrollTo(0, 0);
+}
+
+function renderQuestions(sec) {
+  const container = document.getElementById(`questions-${sec.id}`);
+  if (!container) return;
+
+  // 重新评估所有题目的跳过条件
+  sec.questions.forEach(q => {
+    if (q.condition && shouldSkip(q.condition)) {
+      state.skippedQuestions.add(q.id);
+      delete state.answers[q.id];
+    } else if (!q.condition) {
+      // 非条件题目不应该被跳过
+      state.skippedQuestions.delete(q.id);
+    } else {
+      state.skippedQuestions.delete(q.id);
+    }
+  });
+
+  let html = '';
+  sec.questions.forEach((q, qi) => {
+    if (state.skippedQuestions.has(q.id)) return;
+
+    html += `<div class="q-card" id="q-${q.id}">`;
+    html += `<span class="q-num">${q.id}</span>`;
+
+    if (q.type === 'radio') html += `<span class="q-type">单选</span>`;
+    else if (q.type === 'checkbox') html += `<span class="q-type">多选</span>`;
+    else if (q.type === 'likert') html += `<span class="q-type">量表</span>`;
+    else if (q.type === 'matrix') html += `<span class="q-type">矩阵量表</span>`;
+    else if (q.type === 'textarea') html += `<span class="q-type">开放题</span>`;
+
+    if (q.required) html += `<span style="color:var(--danger);font-size:12px;"> *必填</span>`;
+
+    html += `<div class="q-title">${q.title}</div>`;
+
+    if (q.type === 'radio') {
+      html += renderRadio(q);
+    } else if (q.type === 'checkbox') {
+      html += renderCheckbox(q);
+    } else if (q.type === 'likert') {
+      html += renderLikert(q);
+    } else if (q.type === 'matrix') {
+      html += renderMatrix(q);
+    } else if (q.type === 'textarea') {
+      html += renderTextarea(q);
+    }
+
+    // B1的跳题提示
+    if (q.skipTrigger) {
+      const skipLabel = q.opts.find(o => o.startsWith(q.skipTrigger + '.')) || q.skipTrigger;
+      html += `<p style="font-size:12px;color:var(--warning);margin-top:8px;">⚠ 选择"${skipLabel}"后将跳过部分题目</p>`;
+    }
+
+    html += `</div>`;
+  });
+
+  container.innerHTML = html;
+
+  // 恢复之前的选择
+  sec.questions.forEach(q => {
+    if (state.skippedQuestions.has(q.id)) return;
+    restoreAnswer(q);
+  });
+}
+
+// ==================== 题型渲染 ====================
+
+function renderRadio(q) {
+  let html = '<div class="options">';
+  q.opts.forEach((opt, i) => {
+    const prefix = opt.match(/^([A-Z])\./);
+    const hasOther = q.hasOther && prefix && prefix[1] === q.hasOther;
+    html += `<div class="opt-item" onclick="selectRadio('${q.id}', '${escapeHtml(opt)}', this)" data-value="${escapeHtml(opt)}">`;
+    html += `<div class="opt-radio"></div>`;
+    html += `<div class="opt-text">${opt}</div>`;
+    html += `</div>`;
+    if (hasOther) {
+      html += `<div class="opt-other-wrap" id="other-${q.id}" style="display:none;">`;
+      html += `<input class="opt-other-input" placeholder="请注明..." oninput="updateOther('${q.id}', this.value)" />`;
+      html += `</div>`;
+    }
+  });
+  html += '</div>';
+  return html;
+}
+
+function renderCheckbox(q) {
+  let html = '<div class="options">';
+  q.opts.forEach((opt, i) => {
+    const prefix = opt.match(/^([A-Z])\./);
+    const hasOther = q.hasOther && prefix && prefix[1] === q.hasOther;
+    html += `<div class="opt-item" onclick="toggleCheckbox('${q.id}', '${escapeHtml(opt)}', this)" data-value="${escapeHtml(opt)}">`;
+    html += `<div class="opt-check"></div>`;
+    html += `<div class="opt-text">${opt}</div>`;
+    html += `</div>`;
+    if (hasOther) {
+      html += `<div class="opt-other-wrap" id="other-${q.id}" style="display:none;">`;
+      html += `<input class="opt-other-input" placeholder="请注明..." oninput="updateOther('${q.id}', this.value)" />`;
+      html += `</div>`;
+    }
+  });
+  html += '</div>';
+  return html;
+}
+
+function renderLikert(q) {
+  let html = '';
+  q.rows.forEach(row => {
+    html += `<div class="likert-row">`;
+    html += `<div class="likert-label">${row}</div>`;
+    html += `<div class="likert-opts">`;
+    // 使用id为 q.id 存储值
+    const likertId = q.rows.length === 1 ? q.id : `${q.id}_${row.replace(/[^a-zA-Z\u4e00-\u9fa5]/g,'').substring(0,6)}`;
+    for (let i = 0; i < q.scaleLabels.length; i++) {
+      const match = q.scaleLabels[i].match(/^(\d+)=/);
+      const val = match ? match[1] : String(i);
+      html += `<div class="likert-btn" onclick="selectLikert('${q.id}', '${val}', this)" data-value="${val}">${val}</div>`;
+    }
+    html += `</div></div>`;
+  });
+  if (q.scaleLabels) {
+    html += `<div style="display:flex;gap:6px;margin-top:4px;font-size:11px;color:var(--text-light);flex-wrap:wrap;">`;
+    q.scaleLabels.forEach(l => { html += `<span>${l}</span>`; });
+    html += `</div>`;
+  }
+  return html;
+}
+
+function renderMatrix(q) {
+  let html = '';
+  q.rows.forEach(row => {
+    html += `<div class="likert-row">`;
+    html += `<div class="likert-label">${row}</div>`;
+    html += `<div class="likert-opts">`;
+    for (let i = 0; i < q.scaleLabels.length; i++) {
+      const match = q.scaleLabels[i].match(/^(\d+)=/);
+      const val = match ? match[1] : String(i + 1);
+      const matrixId = `${q.id}_${row.replace(/[^a-zA-Z\u4e00-\u9fa5]/g,'').substring(0,8)}`;
+      html += `<div class="likert-btn" onclick="selectLikert('${matrixId}', '${val}', this)" data-value="${val}">${val}</div>`;
+    }
+    html += `</div></div>`;
+  });
+  if (q.scaleLabels) {
+    html += `<div style="display:flex;gap:6px;margin-top:4px;font-size:11px;color:var(--text-light);flex-wrap:wrap;">`;
+    q.scaleLabels.forEach(l => { html += `<span>${l}</span>`; });
+    html += `</div>`;
+  }
+  return html;
+}
+
+function renderTextarea(q) {
+  return `<div class="textarea-wrap">
+    <textarea id="ta-${q.id}" placeholder="${q.placeholder||'请输入...'}" maxlength="${q.maxLength||500}" oninput="updateTextarea('${q.id}')">${state.answers[q.id]||''}</textarea>
+    <div class="char-count"><span id="count-${q.id}">${(state.answers[q.id]||'').length}</span>/${q.maxLength||500}</div>
+  </div>`;
+}
+
+// ==================== 用户交互 ====================
+
+function selectRadio(qid, value, el) {
+  const card = el.closest('.q-card');
+  card.querySelectorAll('.opt-item').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  state.answers[qid] = value;
+
+  // 处理"其他"输入框显示
+  toggleOtherInput(qid, value);
+
+  // 刷新条件跳转
+  refreshConditions();
+  updateProgress();
+  debouncedSaveDraft();
+}
+
+function toggleCheckbox(qid, value, el) {
+  el.classList.toggle('selected');
+  let vals = state.answers[qid] || [];
+  if (!Array.isArray(vals)) vals = [];
+  const idx = vals.indexOf(value);
+  if (idx >= 0) {
+    vals.splice(idx, 1);
+  } else {
+    vals.push(value);
+  }
+
+  // B1 排他性选择逻辑：I选项与其他选项互斥
+  if (qid === 'B1') {
+    const SKIP_VALUE = 'I. 尚未应用任何AI技术';
+    const card = el.closest('.q-card');
+    if (value === SKIP_VALUE) {
+      // 选中了"I"，取消其他所有选项
+      if (vals.includes(SKIP_VALUE)) {
+        vals = [SKIP_VALUE];
+        card.querySelectorAll('.opt-item').forEach(o => {
+          const optVal = o.getAttribute('data-value');
+          if (optVal !== SKIP_VALUE) o.classList.remove('selected');
+          else o.classList.add('selected');
+        });
+      }
+    } else if (vals.some(v => v !== SKIP_VALUE)) {
+      // 选中了非I选项，移除I
+      const iIdx = vals.indexOf(SKIP_VALUE);
+      if (iIdx >= 0) vals.splice(iIdx, 1);
+      card.querySelectorAll('.opt-item').forEach(o => {
+        if (o.getAttribute('data-value') === SKIP_VALUE) o.classList.remove('selected');
+      });
+    }
+  }
+
+  state.answers[qid] = vals;
+
+  // 处理"其他"输入框显示
+  toggleOtherInput(qid, vals);
+
+  // 刷新条件跳转
+  refreshConditions();
+  updateProgress();
+  debouncedSaveDraft();
+}
+
+function toggleOtherInput(qid, value) {
+  const otherDiv = document.getElementById(`other-${qid}`);
+  if (!otherDiv) return;
+  const vals = Array.isArray(value) ? value : [value];
+  const q = findQuestion(qid);
+  if (!q || !q.hasOther) return;
+
+  // 检查是否有选项包含hasOther前缀
+  const otherPrefix = `${q.hasOther}. `;
+  const hasOtherSelected = vals.some(v => v.startsWith(otherPrefix) || v.startsWith(q.hasOther));
+  otherDiv.style.display = hasOtherSelected ? 'block' : 'none';
+
+  if (hasOtherSelected) {
+    const input = otherDiv.querySelector('input');
+    const existingOther = vals.find(v => v.startsWith(otherPrefix) || v === q.hasOther);
+    if (existingOther && existingOther !== otherPrefix.trim() && existingOther !== q.hasOther) {
+      input.value = existingOther.replace(otherPrefix, '').trim();
+    }
+  }
+}
+
+function updateOther(qid, value) {
+  const q = findQuestion(qid);
+  if (!q) return;
+  const otherPrefix = `${q.hasOther}. `;
+  const vals = state.answers[qid];
+  if (Array.isArray(vals)) {
+    // 更新已有other值
+    const idx = vals.findIndex(v => v.startsWith(otherPrefix) || v === q.hasOther);
+    const newVal = value ? `${otherPrefix}${value}` : q.hasOther;
+    if (idx >= 0) {
+      vals[idx] = newVal;
+    } else {
+      vals.push(newVal);
+    }
+    state.answers[qid] = [...vals];
+  } else if (typeof vals === 'string') {
+    state.answers[qid] = value ? `${otherPrefix}${value}` : q.hasOther;
+  }
+}
+
+function selectLikert(qid, value, el) {
+  const btnGroup = el.parentElement;
+  btnGroup.querySelectorAll('.likert-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  state.answers[qid] = value;
+  updateProgress();
+  updateSectionCompletion();
+  updateQuestionStatus();
+  debouncedSaveDraft();
+}
+
+function updateTextarea(qid) {
+  const ta = document.getElementById(`ta-${qid}`);
+  if (ta) {
+    state.answers[qid] = ta.value;
+    const countEl = document.getElementById(`count-${qid}`);
+    if (countEl) countEl.textContent = ta.value.length;
+    updateProgress();
+    updateSectionCompletion();
+    updateQuestionStatus();
+    debouncedSaveDraft();
+  }
+}
+
+function refreshConditions() {
+  const sec = SURVEY.sections[state.currentSection];
+  if (!sec) return;
+  let changed = false;
+  sec.questions.forEach(q => {
+    if (q.condition) {
+      const shouldBeSkipped = shouldSkip(q.condition);
+      const isSkipped = state.skippedQuestions.has(q.id);
+      if (shouldBeSkipped && !isSkipped) {
+        state.skippedQuestions.add(q.id);
+        delete state.answers[q.id];
+        changed = true;
+      } else if (!shouldBeSkipped && isSkipped) {
+        state.skippedQuestions.delete(q.id);
+        changed = true;
+      }
+    }
+  });
+  if (changed) {
+    renderCurrentSection();
+  } else {
+    updateSectionCompletion();
+    updateQuestionStatus();
+  }
+}
+
+function renderCurrentSection() {
+  const sec = SURVEY.sections[state.currentSection];
+  if (!sec) return;
+  renderQuestions(sec);
+  updateProgress();
+  updateSectionCompletion();
+  updateQuestionStatus();
+}
+
+function shouldSkip(condition) {
+  const val = state.answers[condition.depends];
+  if (val === undefined || val === null || val === '') return true;
+
+  // include: 仅当值包含指定项时才显示（不包含则跳过）
+  if (condition.include) {
+    if (Array.isArray(val)) return !val.includes(condition.include);
+    return val !== condition.include;
+  }
+
+  // excludeAny: 值包含任一指定项时跳过
+  if (condition.excludeAny) {
+    if (Array.isArray(val)) return condition.excludeAny.some(ex => val.includes(ex));
+    return condition.excludeAny.includes(val);
+  }
+
+  // exclude: 值包含指定项时跳过
+  if (condition.exclude) {
+    if (Array.isArray(val)) return val.includes(condition.exclude);
+    return val === condition.exclude;
+  }
+
+  return false;
+}
+
+// ==================== 导航 ====================
+
+function findQuestion(qid) {
+  for (const sec of SURVEY.sections) {
+    for (const q of sec.questions) {
+      if (q.id === qid) return q;
+    }
+  }
+  return null;
+}
+
+function restoreAnswer(q) {
+  const val = state.answers[q.id];
+  if (val === undefined && q.type !== 'matrix') return;
+
+  if (q.type === 'radio') {
+    const card = document.getElementById(`q-${q.id}`);
+    if (!card) return;
+    const items = card.querySelectorAll('.opt-item');
+    items.forEach(item => {
+      if (item.dataset.value === val) {
+        item.classList.add('selected');
+        toggleOtherInput(q.id, val);
+      }
+    });
+    // Restore "other" input value
+    const otherDiv = document.getElementById(`other-${q.id}`);
+    if (otherDiv && q.hasOther) {
+      const otherPrefix = `${q.hasOther}. `;
+      if (val && val.startsWith(otherPrefix)) {
+        otherDiv.style.display = 'block';
+        otherDiv.querySelector('input').value = val.replace(otherPrefix, '').trim();
+      }
+    }
+  } else if (q.type === 'checkbox' && Array.isArray(val)) {
+    const card = document.getElementById(`q-${q.id}`);
+    if (!card) return;
+    const items = card.querySelectorAll('.opt-item');
+    items.forEach(item => {
+      if (val.includes(item.dataset.value)) {
+        item.classList.add('selected');
+      }
+    });
+    toggleOtherInput(q.id, val);
+    // Restore "other" input value
+    const otherDiv = document.getElementById(`other-${q.id}`);
+    if (otherDiv && q.hasOther) {
+      const otherPrefix = `${q.hasOther}. `;
+      const otherVal = val.find(v => v.startsWith(otherPrefix));
+      if (otherVal) {
+        otherDiv.style.display = 'block';
+        otherDiv.querySelector('input').value = otherVal.replace(otherPrefix, '').trim();
+      }
+    }
+  } else if (q.type === 'likert') {
+    const card = document.getElementById(`q-${q.id}`);
+    if (!card) return;
+    if (q.rows.length === 1 && val !== undefined) {
+      const btns = card.querySelectorAll('.likert-btn');
+      btns.forEach(b => {
+        if (b.dataset.value === String(val)) b.classList.add('selected');
+      });
+    }
+  } else if (q.type === 'matrix') {
+    const card = document.getElementById(`q-${q.id}`);
+    if (!card) return;
+    // Matrix uses composite keys: QID_rowkey
+    q.rows.forEach(row => {
+      const rowKey = row.replace(/[^a-zA-Z\u4e00-\u9fa5]/g,'').substring(0,8);
+      const matrixId = `${q.id}_${rowKey}`;
+      const rowVal = state.answers[matrixId];
+      if (rowVal !== undefined) {
+        const rows = card.querySelectorAll('.likert-row');
+        rows.forEach(lr => {
+          const label = lr.querySelector('.likert-label');
+          if (label && label.textContent.trim() === row) {
+            const btns = lr.querySelectorAll('.likert-btn');
+            btns.forEach(b => {
+              if (b.dataset.value === String(rowVal)) b.classList.add('selected');
+            });
+          }
+        });
+      }
+    });
+  }
+}
+
+function prevSection() {
+  if (state.currentSection > 0) {
+    state.currentSection--;
+    renderAll();
+  }
+}
+
+function nextSection() {
+  const sec = SURVEY.sections[state.currentSection];
+  if (!validateSection(sec)) return;
+
+  state.currentSection++;
+  renderAll();
+  debouncedSaveDraft();
+}
+
+function validateSection(sec) {
+  let valid = true;
+  sec.questions.forEach(q => {
+    if (state.skippedQuestions.has(q.id)) return;
+    if (q.required) {
+      let hasValue = false;
+      if (q.type === 'matrix') {
+        // Matrix: check all rows have values
+        hasValue = q.rows.every(row => {
+          const rowKey = row.replace(/[^a-zA-Z\u4e00-\u9fa5]/g,'').substring(0,8);
+          const matrixId = `${q.id}_${rowKey}`;
+          const v = state.answers[matrixId];
+          return v !== undefined && v !== '';
+        });
+      } else {
+        const val = state.answers[q.id];
+        hasValue = val !== undefined && val !== '' && (!Array.isArray(val) || val.length > 0);
+      }
+      if (!hasValue) {
+        const card = document.getElementById(`q-${q.id}`);
+        if (card) {
+          card.classList.add('required-missing');
+          setTimeout(() => card.classList.remove('required-missing'), 600);
+        }
+        valid = false;
+      }
+    }
+  });
+
+  if (!valid) {
+    showToast('请完成所有必填题目后再继续', 'error');
+    const firstMissing = sec.questions.find(q => {
+      if (state.skippedQuestions.has(q.id)) return false;
+      if (!q.required) return false;
+      if (q.type === 'matrix') {
+        return !q.rows.every(row => {
+          const rowKey = row.replace(/[^a-zA-Z\u4e00-\u9fa5]/g,'').substring(0,8);
+          const v = state.answers[`${q.id}_${rowKey}`];
+          return v !== undefined && v !== '';
+        });
+      }
+      const val = state.answers[q.id];
+      return val === undefined || val === '' || (Array.isArray(val) && val.length === 0);
+    });
+    if (firstMissing) {
+      const card = document.getElementById(`q-${firstMissing.id}`);
+      if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+  return valid;
+}
+
+// ==================== 完成度与状态更新 ====================
+
+function isQuestionAnswered(q) {
+  if (q.type === 'matrix') {
+    return q.rows.every(row => {
+      const rowKey = row.replace(/[^a-zA-Z\u4e00-\u9fa5]/g,'').substring(0,8);
+      const matrixId = `${q.id}_${rowKey}`;
+      const v = state.answers[matrixId];
+      return v !== undefined && v !== '';
+    });
+  }
+  const val = state.answers[q.id];
+  return val !== undefined && val !== '' && (!Array.isArray(val) || val.length > 0);
+}
+
+function updateSectionCompletion() {
+  const sec = SURVEY.sections[state.currentSection];
+  if (!sec) return;
+
+  let total = 0;
+  let completed = 0;
+
+  sec.questions.forEach(q => {
+    if (state.skippedQuestions.has(q.id)) return;
+    if (!q.required) return;
+    total++;
+    if (isQuestionAnswered(q)) completed++;
+  });
+
+  const completedEl = document.getElementById('completed-count');
+  const totalEl = document.getElementById('total-count');
+  if (completedEl) completedEl.textContent = completed;
+  if (totalEl) totalEl.textContent = total;
+
+  const badge = document.getElementById('completion-badge');
+  if (badge) {
+    const pct = total > 0 ? Math.round(completed / total * 100) : 0;
+    if (total > 0 && completed === total) {
+      badge.className = 'section-completion complete';
+      badge.innerHTML = '<span class="completion-icon">✓</span> 已完成 ' + completed + '/' + total + ' 题 <span class="pct">(' + pct + '%)</span>';
+    } else {
+      badge.className = 'section-completion';
+      badge.innerHTML = '<span class="completion-icon">○</span> 已完成 ' + completed + '/' + total + ' 题 <span class="pct">(' + pct + '%)</span>';
+    }
+  }
+}
+
+function updateQuestionStatus() {
+  const sec = SURVEY.sections[state.currentSection];
+  if (!sec) return;
+  sec.questions.forEach(q => {
+    if (state.skippedQuestions.has(q.id)) return;
+    const card = document.getElementById(`q-${q.id}`);
+    if (!card) return;
+    if (isQuestionAnswered(q)) {
+      card.classList.add('answered');
+    } else {
+      card.classList.remove('answered');
+    }
+  });
+}
+
+function updateProgress() {
+  const totalSecs = SURVEY.sections.length;
+  const progress = state.currentSection >= 0 ? ((state.currentSection + 1) / totalSecs * 100) : 0;
+
+  // 更新进度条（如果在survey-content中）
+  const progressWrap = document.querySelector('.progress-wrap');
+  if (state.currentSection >= 0 && state.currentSection < totalSecs) {
+    if (!progressWrap) {
+      const container = document.querySelector('.container');
+      const wrap = document.createElement('div');
+      wrap.className = 'progress-wrap';
+      wrap.innerHTML = `
+        <div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div>
+        <div class="progress-text"><span>第 ${state.currentSection+1}/${totalSecs} 部分</span><span>${Math.round(progress)}%</span></div>
+      `;
+      container.insertBefore(wrap, container.firstChild);
+    } else {
+      const fill = progressWrap.querySelector('.progress-fill');
+      const text = progressWrap.querySelector('.progress-text');
+      if (fill) fill.style.width = progress + '%';
+      if (text) text.innerHTML = `<span>第 ${state.currentSection+1}/${totalSecs} 部分</span><span>${Math.round(progress)}%</span>`;
+    }
+  }
+}
+
+// ==================== 提交 ====================
+
+async function submitSurvey() {
+  const sec = SURVEY.sections[state.currentSection];
+  if (!validateSection(sec)) return;
+
+  // 提交前二次校验IP状态（双保险）
+  try {
+    const statusResp = await fetch('/api/survey/status');
+    const statusData = await statusResp.json();
+    if (statusData.already_submitted) {
+      showToast('该设备已提交过问卷，每人仅可提交一次', 'error');
+      return;
+    }
+  } catch (e) { /* 网络错误时继续提交，由后端兜底 */ }
+
+  // 二次确认
+  showConfirm('确认提交', '提交后将无法修改，确定要提交问卷吗？', async () => {
+    if (state.submitting) return;
+    state.submitting = true;
+    const btn = document.getElementById('submit-btn');
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = '正在提交...';
+    }
+    showLoading('正在提交问卷，请稍候...');
+
+    const duration = Math.round((Date.now() - state.startTime) / 1000);
+
+    // 收集所有答案（排除跳过的题目）
+    const payload = { ...state.answers, _duration: duration };
+    // 移除跳过的题目
+    state.skippedQuestions.forEach(id => { delete payload[id]; });
+
+    try {
+      const resp = await fetch('/api/survey/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const result = await resp.json();
+      hideLoading();
+      if (result.success) {
+        clearDraft();
+        state.currentSection = SURVEY.sections.length;
+        renderAll();
+        showToast('提交成功！感谢您的参与', 'success');
+      } else {
+        showToast(result.error || '提交失败，请重试', 'error');
+        state.submitting = false;
+        if (btn) { btn.disabled = false; btn.textContent = '提交问卷'; }
+      }
+    } catch (err) {
+      hideLoading();
+      showToast('网络错误，请检查网络后重试', 'error');
+      state.submitting = false;
+      if (btn) { btn.disabled = false; btn.textContent = '提交问卷'; }
+    }
+  });
+}
+
+// ==================== UI工具 ====================
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + (type || '');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function showLoading(msg) {
+  const overlay = document.getElementById('loading-overlay');
+  const text = document.getElementById('loading-text');
+  if (text) text.textContent = msg || '正在处理，请稍候...';
+  if (overlay) overlay.style.display = 'flex';
+}
+
+function hideLoading() {
+  const overlay = document.getElementById('loading-overlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+function showConfirm(title, msg, onConfirm, onCancel) {
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal-box">
+      <h3>${title}</h3>
+      <p>${msg}</p>
+      <div class="modal-btns">
+        <button class="btn btn-outline" id="confirm-cancel">取消</button>
+        <button class="btn btn-primary" id="confirm-ok">确认</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  overlay.querySelector('#confirm-ok').onclick = () => {
+    overlay.remove();
+    if (onConfirm) onConfirm();
+  };
+  overlay.querySelector('#confirm-cancel').onclick = () => {
+    overlay.remove();
+    if (onCancel) onCancel();
+  };
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// 初始化
+async function checkIpStatus() {
+  try {
+    const resp = await fetch('/api/survey/status');
+    const data = await resp.json();
+    if (data.already_submitted) {
+      state.ipSubmitted = true;
+      // 显示已提交页面
+      document.getElementById('sec-intro').classList.remove('active');
+      document.getElementById('sec-already-submitted').classList.add('active');
+      // 清除草稿
+      clearDraft();
+    }
+    // 问卷关闭
+    if (!data.open) {
+      const btn = document.querySelector('#sec-intro .btn-primary');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = data.message || '问卷暂未开放';
+        btn.style.background = '#ccc';
+      }
+    }
+  } catch(e) { /* 网络错误时允许填写 */ }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateProgress();
+  checkIpStatus();
+});
+</script>
+</body>
+</html>
