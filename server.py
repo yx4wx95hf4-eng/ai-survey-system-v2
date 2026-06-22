@@ -29,7 +29,9 @@ app.config['SECRET_KEY'] = secrets.token_hex(32)
 ADMIN_PASSWORD_HASH = '6051fc84a7a0d74c225fb18a496b09952da5642e60723ecae543298edd7d82d6'
 ADMIN_TOKEN = secrets.token_hex(32)
 
-DATABASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'survey.db')
+# 数据库路径（云端部署用 /tmp，本地开发用当前目录）
+_DB_DIR = '/tmp' if 'RENDER' in os.environ else os.path.dirname(os.path.abspath(__file__))
+DATABASE = os.path.join(_DB_DIR, 'survey.db')
 
 # ===== 速率限制 =====
 _login_attempts = {}  # {ip: [(timestamp, ...)]}
